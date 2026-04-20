@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyBillBook Query Assistant</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="dot"></span>
+      <h1>Query Assistant</h1>
+    </div>
+    <div class="schema-meta" id="schemaMeta">schema: …</div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="generate">Generate</button>
+    <button class="tab" data-tab="explore">Explore</button>
+    <button class="tab" data-tab="settings">Settings</button>
+  </nav>
+
+  <section id="tab-generate" class="tab-panel active">
+    <div class="status-bar">
+      <div class="status-row">
+        <span class="label">Metabase DB:</span>
+        <span id="dbStatus" class="badge badge-unknown">detecting…</span>
+        <button id="refreshDb" class="btn-tiny" title="Re-detect">↻</button>
+        <span class="spacer"></span>
+        <button id="newConvoBtn" class="btn-tiny" title="Start a fresh conversation (forgets history)">↺ new chat</button>
+      </div>
+    </div>
+
+    <div id="conversation" class="conversation"></div>
+
+    <div id="generateStatus" class="gen-status hidden"></div>
+
+    <div class="composer">
+      <textarea
+        id="requestInput"
+        placeholder="Ask for a query, or paste an error from Metabase to fix the previous SQL. Shift+Enter for new line, Enter to send."
+        rows="3"
+      ></textarea>
+      <div class="action-row">
+        <button id="generateBtn" class="btn-primary">Send</button>
+        <label class="model-toggle">
+          <input type="checkbox" id="useFlash"> fast
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-explore" class="tab-panel">
+    <input id="exploreSearch" type="search" placeholder="Search tables / columns…" autocomplete="off">
+    <div id="exploreResults" class="explore-results"></div>
+  </section>
+
+  <section id="tab-settings" class="tab-panel">
+    <label class="field-label">Provider</label>
+    <select id="providerSelect">
+      <option value="gemini">Google Gemini</option>
+      <option value="openai">OpenAI</option>
+      <option value="anthropic">Anthropic (Claude)</option>
+      <option value="openrouter">OpenRouter</option>
+      <option value="custom">Custom (OpenAI-compatible)</option>
+    </select>
+    <p class="helper" id="providerHelp"></p>
+
+    <label for="apiKeyInput" class="field-label">API key</label>
+    <input id="apiKeyInput" type="password" autocomplete="off">
+
+    <div class="action-row" style="margin: 8px 0;">
+      <button id="loadModelsBtn" class="btn-secondary">Load available models</button>
+      <span id="loadModelsStatus" class="save-status"></span>
+    </div>
+
+    <label class="field-label">Default model</label>
+    <input id="defaultModelInput" type="text" list="modelSuggestions" autocomplete="off">
+    <datalist id="modelSuggestions"></datalist>
+
+    <label class="field-label">Fast model (for "fast" toggle)</label>
+    <input id="fastModelInput" type="text" list="modelSuggestions" autocomplete="off">
+
+    <div id="customBaseUrlRow" class="hidden">
+      <label class="field-label">Base URL (OpenAI-compatible)</label>
+      <input id="customBaseUrlInput" type="text" placeholder="e.g. https://api.together.xyz/v1">
+    </div>
+
+    <label class="field-label">Extra Metabase DB names that share the Flobooks schema</label>
+    <input id="extraFlobooksDbs" type="text" placeholder="comma-separated, e.g. flobooksMetabase">
+    <p class="helper">
+      Defaults: Flobooks, flobooksMetabase, production-issue-replica.
+    </p>
+
+    <button id="saveSettings" class="btn-primary">Save</button>
+    <span id="saveStatus" class="save-status"></span>
+  </section>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

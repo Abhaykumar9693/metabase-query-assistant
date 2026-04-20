@@ -1,0 +1,4742 @@
+{
+  "source_sha256": "02514b13e32e",
+  "generated_at": "2026-04-20T05:20:08.456Z",
+  "metabase_db_map": {
+    "Flobooks": "flobooks",
+    "flobooksMetabase": "flobooks",
+    "production-issue-replica": "flobooks",
+    "Phone Pe": "phonepe"
+  },
+  "databases": {
+    "flobooks": {
+      "display": "Flobooks",
+      "tables": {
+        "users": {
+          "name": "users",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "email": {
+              "type": "string",
+              "notes": ""
+            },
+            "password": {
+              "type": "text",
+              "notes": ""
+            },
+            "first_name": {
+              "type": "string",
+              "notes": ""
+            },
+            "last_name": {
+              "type": "string",
+              "notes": ""
+            },
+            "mobile_number": {
+              "type": "string",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "fcm_token": {
+              "type": "string",
+              "notes": ""
+            },
+            "is_freezed": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "referral_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "otp_secret_key": {
+              "type": "string",
+              "notes": ""
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "referrer_id": {
+              "type": "uuid",
+              "notes": "FK→users (self-ref)",
+              "fk": {
+                "table": "users",
+                "note": "self-ref"
+              }
+            },
+            "uninstalled_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "user_group": {
+              "type": "string",
+              "notes": ""
+            },
+            "is_mbb_pay_settlement_blocked": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "is_reward_blocked": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "subscription_stats": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "created_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "updated_at": {
+              "type": "timestamp",
+              "notes": ""
+            }
+          }
+        },
+        "companies": {
+          "name": "companies",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "mobile_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "email": {
+              "type": "string",
+              "notes": ""
+            },
+            "website": {
+              "type": "string",
+              "notes": ""
+            },
+            "landline_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "pan_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "gst_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "contact_person_name": {
+              "type": "string",
+              "notes": ""
+            },
+            "industry": {
+              "type": "integer",
+              "notes": "enum"
+            },
+            "incorporation_type": {
+              "type": "string",
+              "notes": "default: 'Private Limited Company'",
+              "default": "'Private Limited Company'"
+            },
+            "gst_reg_type": {
+              "type": "integer",
+              "notes": "enum: registered=0, unregistered=1",
+              "enum": {
+                "registered": 0,
+                "unregistered": 1
+              }
+            },
+            "gst_dty": {
+              "type": "string",
+              "notes": "default: 'Regular'",
+              "default": "'Regular'"
+            },
+            "company_contact_type": {
+              "type": "integer",
+              "notes": "enum: user=0, customer=1, supplier=2, duplicate_contact=3",
+              "enum": {
+                "user": 0,
+                "customer": 1,
+                "supplier": 2,
+                "duplicate_contact": 3
+              }
+            },
+            "business_type": {
+              "type": "string",
+              "notes": "enum (BUSINESS_TYPES constant)",
+              "enum_ref": "BUSINESS_TYPES",
+              "enum": {
+                "retailer": 0,
+                "wholesaler": 1,
+                "distributor": 2,
+                "manufacturer": 3,
+                "retailer_wholesaler": 4,
+                "retailer_wholesaler_distributor_manufacturer_services": 30
+              }
+            },
+            "industry_type": {
+              "type": "string",
+              "notes": "enum (INDUSTRY_TYPES constant)",
+              "enum_ref": "INDUSTRY_TYPES",
+              "enum": {
+                "agriculture": 0,
+                "arts_and_design": 1,
+                "automotive": 2,
+                "construction": 3,
+                "consulting": 4,
+                "dairy": 5,
+                "education": 6,
+                "electronics": 7,
+                "engineering": 8,
+                "financial_services": 9,
+                "fruit_and_vegitables": 10,
+                "food_services": 11,
+                "garment": 12,
+                "general_store": 13,
+                "gift_shop": 14,
+                "government": 15,
+                "hardware": 16,
+                "healthcare": 17,
+                "information_technology": 18,
+                "logistics": 19,
+                "pharma": 20,
+                "meat": 21,
+                "metals_and_mining": 22,
+                "mobiles_and_accessories": 23,
+                "non_profit": 24,
+                "oil_and_gas": 25,
+                "services": 26,
+                "stationary": 27,
+                "travel": 28,
+                "fmcg": 29,
+                "others": 30,
+                "hotels": 31,
+                "laundry": 32,
+                "interior_design": 33,
+                "salon": 34,
+                "gym": 35,
+                "tailoring": 36,
+                "real_estate": 37,
+                "ngo_charity": 38,
+                "staffing_hr": 39,
+                "photo_studio": 40,
+                "cinema_themepark": 41,
+                "plumbing": 42,
+                "carpentry": 43,
+                "painting": 44,
+                "cleaning_pest": 45,
+                "photography": 46,
+                "auto_service": 47,
+                "cable_internet": 48,
+                "security": 49,
+                "electronics_repair": 50,
+                "event_planning": 51,
+                "plywood": 52,
+                "jewellery": 53,
+                "electrical_works": 54,
+                "paints": 55,
+                "machinery": 56,
+                "packaging": 57,
+                "sport_equiments": 58,
+                "utensils": 59,
+                "scrap": 60,
+                "sanitary": 61,
+                "liquor": 62,
+                "footwear": 63,
+                "battery": 64,
+                "furniture": 65,
+                "textiles": 66,
+                "opticals": 67,
+                "safety_equipments": 68,
+                "home_services": 69,
+                "service_centre": 70,
+                "medical_device": 71
+              }
+            },
+            "invoice_theme": {
+              "type": "string",
+              "notes": "enum: theme_one=0, theme_two=1",
+              "enum": {
+                "theme_one": 0,
+                "theme_two": 1
+              }
+            },
+            "catalogue_uri": {
+              "type": "string",
+              "notes": ""
+            },
+            "excel_imported": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "sales_invoice_tnc": {
+              "type": "text",
+              "notes": ""
+            },
+            "linked_status": {
+              "type": "integer",
+              "notes": "enum: view_only_party=0, counter_user_exists=1, counter_party_exists=2",
+              "enum": {
+                "view_only_party": 0,
+                "counter_user_exists": 1,
+                "counter_party_exists": 2
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies (self-ref for contacts)",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": "self-ref for contacts"
+              }
+            },
+            "party_id": {
+              "type": "uuid",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            },
+            "created_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "updated_at": {
+              "type": "timestamp",
+              "notes": ""
+            }
+          }
+        },
+        "roles": {
+          "name": "roles",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "role_type": {
+              "type": "integer",
+              "notes": "enum (admin, accountant, partner, etc.)"
+            },
+            "permissions": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "user_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→users",
+              "indexed": true,
+              "fk": {
+                "table": "users",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "creator_role_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→roles (self-ref)",
+              "indexed": true,
+              "fk": {
+                "table": "roles",
+                "note": "self-ref"
+              }
+            },
+            "deactivated_at": {
+              "type": "datetime",
+              "notes": ""
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "invoices": {
+          "name": "invoices",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "reference": {
+              "type": "string",
+              "notes": ""
+            },
+            "invoice_number": {
+              "type": "integer",
+              "notes": ""
+            },
+            "invoice_date": {
+              "type": "datetime",
+              "notes": ""
+            },
+            "due_date": {
+              "type": "date",
+              "notes": ""
+            },
+            "return_quarter": {
+              "type": "string",
+              "notes": ""
+            },
+            "return_month": {
+              "type": "string",
+              "notes": ""
+            },
+            "tnc": {
+              "type": "text",
+              "notes": ""
+            },
+            "customer_notes": {
+              "type": "text",
+              "notes": ""
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: draft=0, final=1",
+              "enum": {
+                "draft": 0,
+                "final": 1
+              }
+            },
+            "invoice_type": {
+              "type": "integer",
+              "notes": "enum: sales_invoice=0, purchase_record=1, quotation=2, credit_note=3, debit_note=4, delivery_challan=5, purchase_order=6, proforma=7, credit_memo=8, debit_memo=9",
+              "enum": {
+                "sales_invoice": 0,
+                "purchase_record": 1,
+                "quotation": 2,
+                "credit_note": 3,
+                "debit_note": 4,
+                "delivery_challan": 5,
+                "purchase_order": 6,
+                "proforma": 7,
+                "credit_memo": 8,
+                "debit_memo": 9
+              }
+            },
+            "total_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "invoice_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "remaining_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "payment_type": {
+              "type": "integer",
+              "notes": "enum: credit=0, cash=1",
+              "enum": {
+                "credit": 0,
+                "cash": 1
+              }
+            },
+            "share_links": {
+              "type": "string",
+              "notes": ""
+            },
+            "share_count": {
+              "type": "integer",
+              "notes": ""
+            },
+            "pos": {
+              "type": "integer",
+              "notes": ""
+            },
+            "offline_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "cancellation_reason": {
+              "type": "string",
+              "notes": ""
+            },
+            "cancellation_initiated_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "cancelled_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "cancellation_initiated_by": {
+              "type": "uuid",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "contact_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies (contact)",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": "contact"
+              }
+            },
+            "party_id": {
+              "type": "uuid",
+              "notes": ""
+            },
+            "shipping_address_id": {
+              "type": "uuid",
+              "notes": "FK→addresses",
+              "fk": {
+                "table": "addresses",
+                "note": null
+              }
+            },
+            "billing_address_id": {
+              "type": "uuid",
+              "notes": "FK→addresses",
+              "fk": {
+                "table": "addresses",
+                "note": null
+              }
+            },
+            "tds_id": {
+              "type": "uuid",
+              "notes": "FK→source_taxes",
+              "fk": {
+                "table": "source_taxes",
+                "note": null
+              }
+            },
+            "tcs_id": {
+              "type": "uuid",
+              "notes": "FK→source_taxes",
+              "fk": {
+                "table": "source_taxes",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "vouchers": {
+          "name": "vouchers",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "voucherable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "voucherable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK",
+              "polymorphic_id": true
+            },
+            "voucher_type": {
+              "type": "integer",
+              "notes": "enum (VOUCHER_TYPES constant — see Section 5)",
+              "enum_ref": "VOUCHER_TYPES",
+              "enum": {
+                "sales_invoice": 0,
+                "purchase_record": 1,
+                "payment_in": 2,
+                "payment_out": 3,
+                "credit": 4,
+                "quotation": 5,
+                "credit_note": 6,
+                "debit_note": 7,
+                "expense": 9,
+                "delivery_challan": 10,
+                "purchase_order": 11,
+                "add_money": 12,
+                "reduce_money": 13,
+                "proforma": 14,
+                "eway_bill": 15,
+                "credit_memo": 16,
+                "debit_memo": 17
+              }
+            },
+            "voucher_date": {
+              "type": "date",
+              "notes": ""
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "serial_number": {
+              "type": "string",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "reference": {
+              "type": "string",
+              "notes": ""
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "discount_type": {
+              "type": "integer",
+              "notes": "enum: amount=0, percentage=1",
+              "enum": {
+                "amount": 0,
+                "percentage": 1
+              }
+            },
+            "billing_address_id": {
+              "type": "uuid",
+              "notes": ""
+            },
+            "shipping_address_id": {
+              "type": "uuid",
+              "notes": ""
+            },
+            "billing_address_obj": {
+              "type": "jsonb",
+              "notes": "snapshot"
+            },
+            "shipping_address_obj": {
+              "type": "jsonb",
+              "notes": "snapshot"
+            },
+            "contact_obj": {
+              "type": "jsonb",
+              "notes": "snapshot"
+            },
+            "place_of_txn": {
+              "type": "string",
+              "notes": "default: \"\"",
+              "default": "\"\""
+            },
+            "origin_of_txn": {
+              "type": "string",
+              "notes": "default: \"\"",
+              "default": "\"\""
+            },
+            "round_off": {
+              "type": "decimal",
+              "notes": "default: 0",
+              "default": "0"
+            },
+            "ledger_category_id": {
+              "type": "uuid",
+              "notes": "FK→ledger_categories",
+              "fk": {
+                "table": "ledger_categories",
+                "note": null
+              }
+            },
+            "secondary_source": {
+              "type": "integer",
+              "notes": "enum: sam=0, recurring_invoice=1, einvoice=2, ocr=3, shared_ledger_voucher=4, online_payments=5",
+              "enum": {
+                "sam": 0,
+                "recurring_invoice": 1,
+                "einvoice": 2,
+                "ocr": 3,
+                "shared_ledger_voucher": 4,
+                "online_payments": 5
+              }
+            },
+            "tds": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "einvoice_status": {
+              "type": "integer",
+              "notes": "enum: failed=0, generated=1, cancelled=2",
+              "enum": {
+                "failed": 0,
+                "generated": 1,
+                "cancelled": 2
+              }
+            },
+            "cancellation_reason": {
+              "type": "string",
+              "notes": ""
+            },
+            "cancellation_initiated_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "cancelled_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "cancellation_initiated_by": {
+              "type": "uuid",
+              "notes": ""
+            },
+            "modifier_role_id": {
+              "type": "uuid",
+              "notes": "FK→roles",
+              "fk": {
+                "table": "roles",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "contact_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies (contact)",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": "contact"
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "payments": {
+          "name": "payments",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "payment_number": {
+              "type": "integer",
+              "notes": ""
+            },
+            "payment_date": {
+              "type": "datetime",
+              "notes": ""
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "remaining_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "payment_mode": {
+              "type": "integer",
+              "notes": "enum: cash=0, cheque=1, online=2, bank=3, upi=4, card=5, netbanking=6",
+              "enum": {
+                "cash": 0,
+                "cheque": 1,
+                "online": 2,
+                "bank": 3,
+                "upi": 4,
+                "card": 5,
+                "netbanking": 6
+              }
+            },
+            "payment_type": {
+              "type": "integer",
+              "notes": "enum: payment_in=0, payment_out=1",
+              "enum": {
+                "payment_in": 0,
+                "payment_out": 1
+              }
+            },
+            "notes": {
+              "type": "text",
+              "notes": ""
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "contact_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies (contact)",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": "contact"
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "payment_records": {
+          "name": "payment_records",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "payment_id": {
+              "type": "uuid",
+              "notes": "indexed, polymorphic FK (via link_source_type)",
+              "indexed": true,
+              "polymorphic_id": true
+            },
+            "recordable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "recordable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK",
+              "polymorphic_id": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "items": {
+          "name": "items",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "hsn_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "sku_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "item_type": {
+              "type": "integer",
+              "notes": "enum: good=0, service=1",
+              "enum": {
+                "good": 0,
+                "service": 1
+              }
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "notes": {
+              "type": "text",
+              "notes": ""
+            },
+            "quantity": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "description": {
+              "type": "text",
+              "notes": ""
+            },
+            "unit": {
+              "type": "integer",
+              "notes": ""
+            },
+            "sac_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "inventory_item_id": {
+              "type": "uuid",
+              "notes": "FK→inventory_items",
+              "fk": {
+                "table": "inventory_items",
+                "note": null
+              }
+            },
+            "itemable_type": {
+              "type": "string",
+              "notes": "polymorphic type (e.g., 'Invoice')",
+              "polymorphic_type": true
+            },
+            "itemable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK",
+              "polymorphic_id": true
+            },
+            "identification_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "origin_item_id": {
+              "type": "uuid",
+              "notes": ""
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "discount_type": {
+              "type": "integer",
+              "notes": "enum: amount=0, percentage=1",
+              "enum": {
+                "amount": 0,
+                "percentage": 1
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "inventory_items": {
+          "name": "inventory_items",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "hsn_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "sku_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "item_type": {
+              "type": "integer",
+              "notes": "enum: good=0, service=1",
+              "enum": {
+                "good": 0,
+                "service": 1
+              }
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "notes": {
+              "type": "text",
+              "notes": ""
+            },
+            "quantity": {
+              "type": "decimal",
+              "notes": "current stock"
+            },
+            "minimum_quantity": {
+              "type": "decimal",
+              "notes": "low stock threshold"
+            },
+            "description": {
+              "type": "text",
+              "notes": ""
+            },
+            "unit": {
+              "type": "integer",
+              "notes": ""
+            },
+            "sac_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "mrp": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "wholesale_price": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "lock_version": {
+              "type": "integer",
+              "notes": "optimistic locking"
+            },
+            "opening_stock": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "additional_fields": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "excel_imported": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "opening_stock_migrated": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "item_attribute": {
+              "type": "integer",
+              "notes": "enum: serialization=0, batch=1",
+              "enum": {
+                "serialization": 0,
+                "batch": 1
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "item_category_id": {
+              "type": "uuid",
+              "notes": "FK→item_categories",
+              "fk": {
+                "table": "item_categories",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "sub_inventory_items": {
+          "name": "sub_inventory_items",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "inventory_item_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→inventory_items",
+              "indexed": true,
+              "fk": {
+                "table": "inventory_items",
+                "note": null
+              }
+            },
+            "item_type": {
+              "type": "integer",
+              "notes": "enum: batch=0, variant=1",
+              "enum": {
+                "batch": 0,
+                "variant": 1
+              }
+            },
+            "sub_item_code": {
+              "type": "string",
+              "notes": "batch number"
+            },
+            "expired_at": {
+              "type": "date",
+              "notes": ""
+            },
+            "mrp": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "conversion_factor": {
+              "type": "decimal",
+              "notes": "default: 1",
+              "default": "1"
+            },
+            "mfd_at": {
+              "type": "date",
+              "notes": "manufacturing date"
+            },
+            "quantity": {
+              "type": "decimal",
+              "notes": "default: 0.0",
+              "default": "0.0"
+            },
+            "sales_price_per_unit": {
+              "type": "decimal",
+              "notes": "default: 0.0",
+              "default": "0.0"
+            },
+            "purchase_price_per_unit": {
+              "type": "decimal",
+              "notes": "default: 0.0",
+              "default": "0.0"
+            },
+            "additional_fields": {
+              "type": "jsonb",
+              "notes": "default: []",
+              "default": "[]"
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "inventory_txns": {
+          "name": "inventory_txns",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "txn_type": {
+              "type": "integer",
+              "notes": "enum: add_stock=0, reduce_stock=1, sales_invoice=2, purchase_record=3, credit_note=4, debit_note=5, opening_stock=6, credit_memo=7, debit_memo=8, transfer_stock=9",
+              "enum": {
+                "add_stock": 0,
+                "reduce_stock": 1,
+                "sales_invoice": 2,
+                "purchase_record": 3,
+                "credit_note": 4,
+                "debit_note": 5,
+                "opening_stock": 6,
+                "credit_memo": 7,
+                "debit_memo": 8,
+                "transfer_stock": 9
+              }
+            },
+            "quantity": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "notes": {
+              "type": "text",
+              "notes": ""
+            },
+            "inventory_item_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→inventory_items",
+              "indexed": true,
+              "fk": {
+                "table": "inventory_items",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "invoice_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→invoices",
+              "indexed": true,
+              "fk": {
+                "table": "invoices",
+                "note": null
+              }
+            },
+            "closing_stock": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "txn_date": {
+              "type": "date",
+              "notes": ""
+            },
+            "unit": {
+              "type": "integer",
+              "notes": ""
+            },
+            "unit_long": {
+              "type": "string",
+              "notes": ""
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "item_infos": {
+          "name": "item_infos",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "is_tax_included": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "gst_percentage": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "price_per_unit": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "info_type": {
+              "type": "integer",
+              "notes": "enum: sales=0, purchase=1, credit_note=2, debit_note=3, wholesale=4",
+              "enum": {
+                "sales": 0,
+                "purchase": 1,
+                "credit_note": 2,
+                "debit_note": 3,
+                "wholesale": 4
+              }
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "discount_type": {
+              "type": "integer",
+              "notes": "enum: amount=0, percentage=1",
+              "enum": {
+                "amount": 0,
+                "percentage": 1
+              }
+            },
+            "infoable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "infoable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK",
+              "polymorphic_id": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "wallets": {
+          "name": "wallets",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "opening_balance": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "closing_balance": {
+              "type": "decimal",
+              "notes": "current running balance"
+            },
+            "credit_limit": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "credit_period": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "khata_closing_balance": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "send_reminder": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "lock_version": {
+              "type": "integer",
+              "notes": "optimistic locking"
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "bank_accounts": {
+          "name": "bank_accounts",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "bank_name": {
+              "type": "string",
+              "notes": ""
+            },
+            "account_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "branch_name": {
+              "type": "string",
+              "notes": ""
+            },
+            "ifsc_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "bank_account_type": {
+              "type": "integer",
+              "notes": "enum: bank_account=0, upi=1",
+              "enum": {
+                "bank_account": 0,
+                "upi": 1
+              }
+            },
+            "suspicion_level": {
+              "type": "integer",
+              "notes": "enum: genuine=0, suspicious_for_rewards=1, suspicious_for_settlements=2",
+              "enum": {
+                "genuine": 0,
+                "suspicious_for_rewards": 1,
+                "suspicious_for_settlements": 2
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "subscriptions": {
+          "name": "subscriptions",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "subscription_type": {
+              "type": "integer",
+              "notes": "enum (SUBSCRIPTION_TYPES constant)",
+              "enum_ref": "SUBSCRIPTION_TYPES",
+              "enum": {
+                "trial": 0,
+                "lite": 1,
+                "standard": 2,
+                "silver": 3,
+                "gold": 4,
+                "diamond": 5,
+                "platinum": 6,
+                "enterprise": 7
+              }
+            },
+            "activated_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "expired_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "features": {
+              "type": "jsonb",
+              "notes": "default: []",
+              "default": "[]"
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "renewal_type": {
+              "type": "integer",
+              "notes": "enum: NONE=0, YEARLY=1, HALFYEARLY=2, QUARTERLY=3, BIMONTHLY=4, MONTHLY=5, WEEKLY=6, ASPRESENTED_YEARLY=7, ASPRESENTED_MONTHLY=8",
+              "enum": {
+                "NONE": 0,
+                "YEARLY": 1,
+                "HALFYEARLY": 2,
+                "QUARTERLY": 3,
+                "BIMONTHLY": 4,
+                "MONTHLY": 5,
+                "WEEKLY": 6,
+                "ASPRESENTED_YEARLY": 7,
+                "ASPRESENTED_MONTHLY": 8
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": ""
+            },
+            "user_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→users",
+              "indexed": true,
+              "fk": {
+                "table": "users",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "subscription_payments": {
+          "name": "subscription_payments",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "transaction_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "subscription_type": {
+              "type": "integer",
+              "notes": "enum (SUBSCRIPTION_TYPES constant)",
+              "enum_ref": "SUBSCRIPTION_TYPES",
+              "enum": {
+                "trial": 0,
+                "lite": 1,
+                "standard": 2,
+                "silver": 3,
+                "gold": 4,
+                "diamond": 5,
+                "platinum": 6,
+                "enterprise": 7
+              }
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: created=0, success=1, failed=2",
+              "enum": {
+                "created": 0,
+                "success": 1,
+                "failed": 2
+              }
+            },
+            "payment_mode": {
+              "type": "integer",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "mandate_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "subscription_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→subscriptions",
+              "indexed": true,
+              "fk": {
+                "table": "subscriptions",
+                "note": null
+              }
+            },
+            "user_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→users",
+              "indexed": true,
+              "fk": {
+                "table": "users",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "addresses": {
+          "name": "addresses",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "city": {
+              "type": "string",
+              "notes": ""
+            },
+            "state": {
+              "type": "integer",
+              "notes": ""
+            },
+            "pincode": {
+              "type": "integer",
+              "notes": ""
+            },
+            "street_address": {
+              "type": "string",
+              "notes": ""
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "address_type": {
+              "type": "integer",
+              "notes": "enum: normal=0, billing=1, shipping=2, godown=3",
+              "enum": {
+                "normal": 0,
+                "billing": 1,
+                "shipping": 2,
+                "godown": 3
+              }
+            },
+            "addressable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "addressable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK",
+              "polymorphic_id": true
+            }
+          }
+        },
+        "documents": {
+          "name": "documents",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "document": {
+              "type": "string",
+              "notes": "file URL/path"
+            },
+            "doc_type": {
+              "type": "integer",
+              "notes": "enum: others=0, company_logo=1, pdf=2, event_thumbnail=3, event_template_image=4, business_card=5, greeting_logo=6, user_sign=7, excel_import=8, csv=9, thermal_pdf=10, gstr1_json=11, consumable_transaction=12, thermal_logo=13",
+              "enum": {
+                "others": 0,
+                "company_logo": 1,
+                "pdf": 2,
+                "event_thumbnail": 3,
+                "event_template_image": 4,
+                "business_card": 5,
+                "greeting_logo": 6,
+                "user_sign": 7,
+                "excel_import": 8,
+                "csv": 9,
+                "thermal_pdf": 10,
+                "gstr1_json": 11,
+                "consumable_transaction": 12,
+                "thermal_logo": 13
+              }
+            },
+            "documentable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "documentable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK, indexed",
+              "indexed": true,
+              "polymorphic_id": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "virtual_accounts": {
+          "name": "virtual_accounts",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "va_type": {
+              "type": "integer",
+              "notes": "enum: Company=1, Party=2",
+              "enum": {
+                "Company": 1,
+                "Party": 2
+              }
+            },
+            "account_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "ifsc_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "banking_partner": {
+              "type": "integer",
+              "notes": "enum: YES_BANK=1, RBL_BANK=2, DBS_BANK=3",
+              "enum": {
+                "YES_BANK": 1,
+                "RBL_BANK": 2,
+                "DBS_BANK": 3
+              }
+            },
+            "integration_partner": {
+              "type": "integer",
+              "notes": "enum: hypto=1, razorpay=2",
+              "enum": {
+                "hypto": 1,
+                "razorpay": 2
+              }
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: INACTIVE=0, ACTIVE=1",
+              "enum": {
+                "INACTIVE": 0,
+                "ACTIVE": 1
+              }
+            },
+            "intg_partner_va_id": {
+              "type": "string",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "intg_partner_parent_va_id": {
+              "type": "string",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "upi_details": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "accountable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "accountable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK, indexed",
+              "indexed": true,
+              "polymorphic_id": true
+            },
+            "company_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "mbb_pay_transactions": {
+          "name": "mbb_pay_transactions",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "rmtr_full_name": {
+              "type": "string",
+              "notes": "remitter name"
+            },
+            "rmtr_account_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "rmtr_account_ifsc_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "rmtr_to_ben_note": {
+              "type": "string",
+              "notes": ""
+            },
+            "intg_partner_txn_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "intg_partner_txn_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "payment_type": {
+              "type": "integer",
+              "notes": "enum: IMPS=0, NEFT=1, UPI=2, RTGS=3, FT=4",
+              "enum": {
+                "IMPS": 0,
+                "NEFT": 1,
+                "UPI": 2,
+                "RTGS": 3,
+                "FT": 4
+              }
+            },
+            "bank_ref_num": {
+              "type": "string",
+              "notes": ""
+            },
+            "pretty_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: PENDING=0, PROCESSING=1, SETTLED=2",
+              "enum": {
+                "PENDING": 0,
+                "PROCESSING": 1,
+                "SETTLED": 2
+              }
+            },
+            "transaction_type": {
+              "type": "integer",
+              "notes": "enum: STANDARD=0, CASHBACK=1, MBB_REWARD_PAYOUT=2",
+              "enum": {
+                "STANDARD": 0,
+                "CASHBACK": 1,
+                "MBB_REWARD_PAYOUT": 2
+              }
+            },
+            "credited_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "fraud_flag": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "source": {
+              "type": "string",
+              "notes": ""
+            },
+            "source_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "payment_source": {
+              "type": "integer",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "voucher_id": {
+              "type": "uuid",
+              "notes": "FK→vouchers",
+              "fk": {
+                "table": "vouchers",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "virtual_account_id": {
+              "type": "uuid",
+              "notes": "FK→virtual_accounts",
+              "fk": {
+                "table": "virtual_accounts",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            },
+            "created_at": {
+              "type": "timestamp",
+              "notes": "indexed",
+              "indexed": true
+            }
+          }
+        },
+        "mbb_pay_settlements": {
+          "name": "mbb_pay_settlements",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "intg_partner_txn_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "txn_type": {
+              "type": "string",
+              "notes": ""
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: PENDING=0, COMPLETED=1, FAILED=2, PROCESSING=3, QUEUED=4, REJECTED=5, CANCELLED=6, REVERSED=7",
+              "enum": {
+                "PENDING": 0,
+                "COMPLETED": 1,
+                "FAILED": 2,
+                "PROCESSING": 3,
+                "QUEUED": 4,
+                "REJECTED": 5,
+                "CANCELLED": 6,
+                "REVERSED": 7
+              }
+            },
+            "settlement_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "intg_partner_charged_gst": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "bank_ref_num": {
+              "type": "string",
+              "notes": ""
+            },
+            "payment_type": {
+              "type": "integer",
+              "notes": "enum: IMPS=0, NEFT=1, UPI=2, RTGS=3",
+              "enum": {
+                "IMPS": 0,
+                "NEFT": 1,
+                "UPI": 2,
+                "RTGS": 3
+              }
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "virtual_account_id": {
+              "type": "uuid",
+              "notes": "FK→virtual_accounts",
+              "fk": {
+                "table": "virtual_accounts",
+                "note": null
+              }
+            },
+            "bank_account_id": {
+              "type": "uuid",
+              "notes": "FK→bank_accounts",
+              "fk": {
+                "table": "bank_accounts",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "ledgers": {
+          "name": "ledgers",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "ledger_type": {
+              "type": "integer",
+              "notes": "enum: expense=0, general=1",
+              "enum": {
+                "expense": 0,
+                "general": 1
+              }
+            },
+            "item_type": {
+              "type": "integer",
+              "notes": "enum: good=0, service=1, default: 0",
+              "enum": {
+                "good": 0,
+                "service": 1
+              },
+              "default": "0"
+            },
+            "price_per_unit": {
+              "type": "decimal",
+              "notes": "default: 0",
+              "default": "0"
+            },
+            "is_tax_included": {
+              "type": "boolean",
+              "notes": "default: false",
+              "default": "false"
+            },
+            "is_tax_exempted": {
+              "type": "boolean",
+              "notes": "default: false",
+              "default": "false"
+            },
+            "is_tax_applicable": {
+              "type": "boolean",
+              "notes": "default: true",
+              "default": "true"
+            },
+            "gst_percentage": {
+              "type": "decimal",
+              "notes": "default: 0",
+              "default": "0"
+            },
+            "itc_type": {
+              "type": "integer",
+              "notes": "enum: eligible_for_itc=0, ineligible_section_17_5=1, ineligible_others=2",
+              "enum": {
+                "eligible_for_itc": 0,
+                "ineligible_section_17_5": 1,
+                "ineligible_others": 2
+              }
+            },
+            "identification_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "primary_unit_id": {
+              "type": "uuid",
+              "notes": "FK→units",
+              "fk": {
+                "table": "units",
+                "note": null
+              }
+            },
+            "discount_type": {
+              "type": "integer",
+              "notes": "enum: amount=0, percentage=1",
+              "enum": {
+                "amount": 0,
+                "percentage": 1
+              }
+            },
+            "ledger_category_id": {
+              "type": "uuid",
+              "notes": "FK→ledger_categories",
+              "fk": {
+                "table": "ledger_categories",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "ledger_categories": {
+          "name": "ledger_categories",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "parent_id": {
+              "type": "uuid",
+              "notes": "self-ref for hierarchy"
+            },
+            "category_type": {
+              "type": "integer",
+              "notes": "enum: expense=0, asset=1, income=2, liability=3, party=4",
+              "enum": {
+                "expense": 0,
+                "asset": 1,
+                "income": 2,
+                "liability": 3,
+                "party": 4
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "txn_ledgers": {
+          "name": "txn_ledgers",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "quantity": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "rate": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "item_type": {
+              "type": "integer",
+              "notes": "enum: good=0, service=1",
+              "enum": {
+                "good": 0,
+                "service": 1
+              }
+            },
+            "price_per_unit": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "is_tax_included": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "is_tax_exempted": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "is_tax_applicable": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "gst_percentage": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "itc_type": {
+              "type": "integer",
+              "notes": "enum: eligible_for_itc=0, ineligible_section_17_5=1, ineligible_others=2",
+              "enum": {
+                "eligible_for_itc": 0,
+                "ineligible_section_17_5": 1,
+                "ineligible_others": 2
+              }
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "discount_type": {
+              "type": "integer",
+              "notes": "enum: amount=0, percentage=1",
+              "enum": {
+                "amount": 0,
+                "percentage": 1
+              }
+            },
+            "cess": {
+              "type": "json",
+              "notes": ""
+            },
+            "sgst": {
+              "type": "json",
+              "notes": ""
+            },
+            "cgst": {
+              "type": "json",
+              "notes": ""
+            },
+            "igst": {
+              "type": "json",
+              "notes": ""
+            },
+            "ugst": {
+              "type": "json",
+              "notes": ""
+            },
+            "unit": {
+              "type": "string",
+              "notes": ""
+            },
+            "unit_long": {
+              "type": "string",
+              "notes": ""
+            },
+            "identification_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "voucher_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→vouchers",
+              "indexed": true,
+              "fk": {
+                "table": "vouchers",
+                "note": null
+              }
+            },
+            "ledger_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→ledgers",
+              "indexed": true,
+              "fk": {
+                "table": "ledgers",
+                "note": null
+              }
+            },
+            "ledger_date": {
+              "type": "datetime",
+              "notes": ""
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "offers": {
+          "name": "offers",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": "precision: 10, scale: 8"
+            },
+            "start_time": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "end_time": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "offer_links": {
+          "name": "offer_links",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "offer_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→offers",
+              "indexed": true,
+              "fk": {
+                "table": "offers",
+                "note": null
+              }
+            },
+            "offerable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK",
+              "polymorphic_id": true
+            },
+            "offerable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "discounts": {
+          "name": "discounts",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "discount_type": {
+              "type": "integer",
+              "notes": "enum: amount=0, percentage=1",
+              "enum": {
+                "amount": 0,
+                "percentage": 1
+              }
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "discountable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "discountable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK, indexed",
+              "indexed": true,
+              "polymorphic_id": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "additional_charges": {
+          "name": "additional_charges",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "charge_type": {
+              "type": "integer",
+              "notes": ""
+            },
+            "charge": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "chargeable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "chargeable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK, indexed",
+              "indexed": true,
+              "polymorphic_id": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "campaigns": {
+          "name": "campaigns",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "campaign_type": {
+              "type": "integer",
+              "notes": "enum: user=0, test=1",
+              "enum": {
+                "user": 0,
+                "test": 1
+              }
+            },
+            "channel_type": {
+              "type": "integer",
+              "notes": "enum: sms=0, whatsapp=1, email=2",
+              "enum": {
+                "sms": 0,
+                "whatsapp": 1,
+                "email": 2
+              }
+            },
+            "user_required_data": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "template_id": {
+              "type": "uuid",
+              "notes": "FK→campaign_templates",
+              "fk": {
+                "table": "campaign_templates",
+                "note": null
+              }
+            },
+            "user_id": {
+              "type": "uuid",
+              "notes": "FK→users",
+              "fk": {
+                "table": "users",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            }
+          }
+        },
+        "campaign_templates": {
+          "name": "campaign_templates",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "category": {
+              "type": "integer",
+              "notes": ""
+            },
+            "template": {
+              "type": "string",
+              "notes": ""
+            },
+            "template_type": {
+              "type": "integer",
+              "notes": "enum: sms=0, whatsapp=1",
+              "enum": {
+                "sms": 0,
+                "whatsapp": 1
+              }
+            },
+            "is_active": {
+              "type": "boolean",
+              "notes": ""
+            }
+          }
+        },
+        "campaign_recipients": {
+          "name": "campaign_recipients",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: delivered=0, seen=1, sent=2, failed=3",
+              "enum": {
+                "delivered": 0,
+                "seen": 1,
+                "sent": 2,
+                "failed": 3
+              }
+            },
+            "recipient_type": {
+              "type": "integer",
+              "notes": ""
+            },
+            "contact_name": {
+              "type": "string",
+              "notes": ""
+            },
+            "contact_mobile_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "campaign_id": {
+              "type": "uuid",
+              "notes": "FK→campaigns",
+              "fk": {
+                "table": "campaigns",
+                "note": null
+              }
+            },
+            "contact_id": {
+              "type": "uuid",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            }
+          }
+        },
+        "campaign_templates_categories": {
+          "name": "campaign_templates_categories",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "image_url": {
+              "type": "string",
+              "notes": ""
+            },
+            "category": {
+              "type": "integer",
+              "notes": "enum: offer=0, festival=1, reward=2",
+              "enum": {
+                "offer": 0,
+                "festival": 1,
+                "reward": 2
+              }
+            },
+            "description": {
+              "type": "string",
+              "notes": ""
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "rewards": {
+          "name": "rewards",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "cashback_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: open=0, payment_pending=1, redeemed=2",
+              "enum": {
+                "open": 0,
+                "payment_pending": 1,
+                "redeemed": 2
+              }
+            },
+            "expiry_date": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "reward_rule_version": {
+              "type": "integer",
+              "notes": ""
+            },
+            "marked_ready_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "scratched_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "rewardee": {
+              "type": "integer",
+              "notes": ""
+            },
+            "reward_rule_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→reward_rules",
+              "indexed": true,
+              "fk": {
+                "table": "reward_rules",
+                "note": null
+              }
+            },
+            "mbb_pay_transaction_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→mbb_pay_transactions",
+              "indexed": true,
+              "fk": {
+                "table": "mbb_pay_transactions",
+                "note": null
+              }
+            },
+            "source_mbb_pay_transaction_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→mbb_pay_transactions",
+              "indexed": true,
+              "fk": {
+                "table": "mbb_pay_transactions",
+                "note": null
+              }
+            },
+            "rewardee_id": {
+              "type": "uuid",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "reward_rules": {
+          "name": "reward_rules",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "rule_type": {
+              "type": "integer",
+              "notes": "enum: transaction_amount=0, transaction_count=1, parties_collection_count=2, counter_party_reward=3, weekly_rewards=4",
+              "enum": {
+                "transaction_amount": 0,
+                "transaction_count": 1,
+                "parties_collection_count": 2,
+                "counter_party_reward": 3,
+                "weekly_rewards": 4
+              }
+            },
+            "campaign_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "milestone": {
+              "type": "float",
+              "notes": ""
+            },
+            "secondary_rules": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "rule_applied_as": {
+              "type": "integer",
+              "notes": "enum: direct=0, percentage=1, fixed=2, upto_milestone=3",
+              "enum": {
+                "direct": 0,
+                "percentage": 1,
+                "fixed": 2,
+                "upto_milestone": 3
+              }
+            },
+            "cashback_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "cashback_type": {
+              "type": "integer",
+              "notes": "enum: flat=0, upto=1, range=2",
+              "enum": {
+                "flat": 0,
+                "upto": 1,
+                "range": 2
+              }
+            },
+            "is_active": {
+              "type": "boolean",
+              "notes": "default: true",
+              "default": "true"
+            },
+            "starting_range": {
+              "type": "float",
+              "notes": ""
+            },
+            "starting_milestone": {
+              "type": "float",
+              "notes": ""
+            },
+            "user_percentage": {
+              "type": "decimal",
+              "notes": ""
+            }
+          }
+        },
+        "godowns": {
+          "name": "godowns",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "is_primary": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "status": {
+              "type": "integer",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "godown_links": {
+          "name": "godown_links",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "itemable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK",
+              "polymorphic_id": true
+            },
+            "itemable_type": {
+              "type": "string",
+              "notes": "polymorphic type (InventoryItem/SubInventoryItem)",
+              "polymorphic_type": true
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "godown_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→godowns",
+              "indexed": true,
+              "fk": {
+                "table": "godowns",
+                "note": null
+              }
+            },
+            "opening_stock": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "quantity": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "godown_transactions": {
+          "name": "godown_transactions",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "txn_type": {
+              "type": "integer",
+              "notes": "enum: add_stock=0, reduce_stock=1",
+              "enum": {
+                "add_stock": 0,
+                "reduce_stock": 1
+              }
+            },
+            "godown_link_id": {
+              "type": "uuid",
+              "notes": "FK→godown_links",
+              "fk": {
+                "table": "godown_links",
+                "note": null
+              }
+            },
+            "inventory_txn_id": {
+              "type": "uuid",
+              "notes": "FK→inventory_txns",
+              "fk": {
+                "table": "inventory_txns",
+                "note": null
+              }
+            },
+            "invoice_item_id": {
+              "type": "uuid",
+              "notes": "FK→items",
+              "fk": {
+                "table": "items",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "quantity": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "txn_date": {
+              "type": "date",
+              "notes": ""
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "source_taxes": {
+          "name": "source_taxes",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "tax_type": {
+              "type": "integer",
+              "notes": "enum: tcs=0, tds=1",
+              "enum": {
+                "tcs": 0,
+                "tds": 1
+              }
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "section": {
+              "type": "string",
+              "notes": ""
+            },
+            "tax_percentage": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "is_active": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            }
+          }
+        },
+        "qr_codes": {
+          "name": "qr_codes",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "qr_code_entity_type": {
+              "type": "integer",
+              "notes": "enum: Company=0, Party=1, Invoice=2",
+              "enum": {
+                "Company": 0,
+                "Party": 1,
+                "Invoice": 2
+              }
+            },
+            "upi_intent": {
+              "type": "string",
+              "notes": ""
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "usage": {
+              "type": "integer",
+              "notes": "enum: single_use=0, multiple_use=1",
+              "enum": {
+                "single_use": 0,
+                "multiple_use": 1
+              }
+            },
+            "fixed_amount": {
+              "type": "boolean",
+              "notes": "default: false",
+              "default": "false"
+            },
+            "qr_type": {
+              "type": "integer",
+              "notes": "enum: upi_qr=0, bharat_qr=1",
+              "enum": {
+                "upi_qr": 0,
+                "bharat_qr": 1
+              }
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: INACTIVE=0, ACTIVE=1",
+              "enum": {
+                "INACTIVE": 0,
+                "ACTIVE": 1
+              }
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "close_by": {
+              "type": "datetime",
+              "notes": ""
+            },
+            "closed_at": {
+              "type": "datetime",
+              "notes": ""
+            },
+            "codable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "codable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK, indexed",
+              "indexed": true,
+              "polymorphic_id": true
+            }
+          }
+        },
+        "recurring_invoices": {
+          "name": "recurring_invoices",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: active=0, expired=1, paused=2",
+              "enum": {
+                "active": 0,
+                "expired": 1,
+                "paused": 2
+              }
+            },
+            "frequency_type": {
+              "type": "integer",
+              "notes": "enum: days=0, weeks=1, months=2, years=4",
+              "enum": {
+                "days": 0,
+                "weeks": 1,
+                "months": 2,
+                "years": 4
+              }
+            },
+            "source": {
+              "type": "integer",
+              "notes": "enum (SOURCES constant)",
+              "enum_ref": "SOURCES",
+              "enum": {
+                "mobile": 0,
+                "web": 1,
+                "online_store": 2,
+                "vyapar": 3,
+                "admin": 4,
+                "desktop": 5,
+                "api": 6,
+                "ios": 7,
+                "tally": 8,
+                "mcf": 9
+              }
+            },
+            "invoice_type": {
+              "type": "integer",
+              "notes": "enum: sales_invoice=0, quotation=1, proforma=3",
+              "enum": {
+                "sales_invoice": 0,
+                "quotation": 1,
+                "proforma": 3
+              }
+            },
+            "frequency": {
+              "type": "integer",
+              "notes": ""
+            },
+            "start_date": {
+              "type": "date",
+              "notes": ""
+            },
+            "end_date": {
+              "type": "date",
+              "notes": ""
+            },
+            "meta_items": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "recurring": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "contact_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies (contact)",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": "contact"
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "coupons": {
+          "name": "coupons",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "integer",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "description": {
+              "type": "text",
+              "notes": ""
+            },
+            "coupon_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "status": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "channel": {
+              "type": "integer",
+              "notes": "enum: sales=0, product=1, chat=2, inbound=3, marketing=4, campaign=5, third_party=6",
+              "enum": {
+                "sales": 0,
+                "product": 1,
+                "chat": 2,
+                "inbound": 3,
+                "marketing": 4,
+                "campaign": 5,
+                "third_party": 6
+              }
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "discount_type": {
+              "type": "integer",
+              "notes": "enum: amount=0, percentage=1",
+              "enum": {
+                "amount": 0,
+                "percentage": 1
+              }
+            },
+            "coupon_scope": {
+              "type": "integer",
+              "notes": "enum: all_user=0, cohort=1",
+              "enum": {
+                "all_user": 0,
+                "cohort": 1
+              }
+            },
+            "coupon_plan": {
+              "type": "integer",
+              "notes": "enum: silver=0, gold=1, diamond=2, platinum=3, enterprise=4",
+              "enum": {
+                "silver": 0,
+                "gold": 1,
+                "diamond": 2,
+                "platinum": 3,
+                "enterprise": 4
+              }
+            },
+            "coupon_platform": {
+              "type": "integer",
+              "notes": "enum: mobile=0, web=1",
+              "enum": {
+                "mobile": 0,
+                "web": 1
+              }
+            },
+            "start_time": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "end_time": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "admin_user_id": {
+              "type": "uuid",
+              "notes": "FK→admin_users",
+              "fk": {
+                "table": "admin_users",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "login_activities": {
+          "name": "login_activities",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "ip": {
+              "type": "string",
+              "notes": ""
+            },
+            "user_agent": {
+              "type": "string",
+              "notes": ""
+            },
+            "activity": {
+              "type": "integer",
+              "notes": "enum: success=0, failed=1",
+              "enum": {
+                "success": 0,
+                "failed": 1
+              }
+            },
+            "login_type": {
+              "type": "integer",
+              "notes": "enum: web=0, mobile=1, desktop=2, ios=3, tally=4",
+              "enum": {
+                "web": 0,
+                "mobile": 1,
+                "desktop": 2,
+                "ios": 3,
+                "tally": 4
+              }
+            },
+            "reported_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "device_id": {
+              "type": "string",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "user_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→users",
+              "indexed": true,
+              "fk": {
+                "table": "users",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "company_settings": {
+          "name": "company_settings",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "entity_type": {
+              "type": "integer",
+              "notes": "enum: item=0, invoice=1, online_store=2, reports=3, print=4, mbb_pay=5, party=6, loyalty=7, serialisation=8, cpp=9, barcode=10",
+              "enum": {
+                "item": 0,
+                "invoice": 1,
+                "online_store": 2,
+                "reports": 3,
+                "print": 4,
+                "mbb_pay": 5,
+                "party": 6,
+                "loyalty": 7,
+                "serialisation": 8,
+                "cpp": 9,
+                "barcode": 10
+              }
+            },
+            "settings": {
+              "type": "jsonb",
+              "notes": "default: {} — structure varies by entity_type (see COMPANY_SETTINGS constant)",
+              "default": "{} — structure varies by entity_type (see COMPANY_SETTINGS constant)"
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "bulk_uploads": {
+          "name": "bulk_uploads",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "spreadsheet_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "upload_type": {
+              "type": "integer",
+              "notes": "enum: item=0, batch=1, party=2, item_edit=3",
+              "enum": {
+                "item": 0,
+                "batch": 1,
+                "party": 2,
+                "item_edit": 3
+              }
+            },
+            "upload_status": {
+              "type": "integer",
+              "notes": "enum: in_progress=0, completed=1, deleted=3, errored=4, queued=5",
+              "enum": {
+                "in_progress": 0,
+                "completed": 1,
+                "deleted": 3,
+                "errored": 4,
+                "queued": 5
+              }
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "ocr_mappings": {
+          "name": "ocr_mappings",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "mapping_type": {
+              "type": "integer",
+              "notes": "enum: contact=0, item=1",
+              "enum": {
+                "contact": 0,
+                "item": 1
+              }
+            },
+            "scan_text": {
+              "type": "string",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "mappable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "mappable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK",
+              "polymorphic_id": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "kyc_entities": {
+          "name": "kyc_entities",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "kyc_status": {
+              "type": "integer",
+              "notes": "enum: unverified=0, verified=1",
+              "enum": {
+                "unverified": 0,
+                "verified": 1
+              }
+            },
+            "kyc_score": {
+              "type": "decimal",
+              "notes": "default: 0",
+              "default": "0"
+            },
+            "status_change": {
+              "type": "integer",
+              "notes": "enum: automatic=0, manual=1",
+              "enum": {
+                "automatic": 0,
+                "manual": 1
+              }
+            },
+            "kycable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "kycable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK, indexed",
+              "indexed": true,
+              "polymorphic_id": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "kyc_details": {
+          "name": "kyc_details",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "kyc_identification_type": {
+              "type": "integer",
+              "notes": "enum: pan=0, gst=1, aadhar=2",
+              "enum": {
+                "pan": 0,
+                "gst": 1,
+                "aadhar": 2
+              }
+            },
+            "suspicion_level": {
+              "type": "integer",
+              "notes": "enum: genuine=0, suspicious_for_rewards=1, suspicious_for_settlements=2",
+              "enum": {
+                "genuine": 0,
+                "suspicious_for_rewards": 1,
+                "suspicious_for_settlements": 2
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "party_links": {
+          "name": "party_links",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "party_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "counter_party_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "counter_company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "partys_ledger_share_pref": {
+              "type": "boolean",
+              "notes": "default: true",
+              "default": "true"
+            }
+          }
+        },
+        "tally_exports": {
+          "name": "tally_exports",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: pending=0, email_pending=1, processed=2, pending_with_remarks=3, deleted=4",
+              "enum": {
+                "pending": 0,
+                "email_pending": 1,
+                "processed": 2,
+                "pending_with_remarks": 3,
+                "deleted": 4
+              }
+            },
+            "source": {
+              "type": "integer",
+              "notes": "enum (SOURCES constant)",
+              "enum_ref": "SOURCES",
+              "enum": {
+                "mobile": 0,
+                "web": 1,
+                "online_store": 2,
+                "vyapar": 3,
+                "admin": 4,
+                "desktop": 5,
+                "api": 6,
+                "ios": 7,
+                "tally": 8,
+                "mcf": 9
+              }
+            },
+            "excel_file_url": {
+              "type": "string",
+              "notes": ""
+            },
+            "xml_file_url": {
+              "type": "string",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "export_processed_on": {
+              "type": "datetime",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "tally_export_files": {
+          "name": "tally_export_files",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "file_type": {
+              "type": "integer",
+              "notes": "enum: sales_with_inventory=0, sales_without_inventory=1, purchase_with_inventory=2, purchase_without_inventory=3, ledger_master=4, item_master=5, excel_zip=6, xml_zip=7",
+              "enum": {
+                "sales_with_inventory": 0,
+                "sales_without_inventory": 1,
+                "purchase_with_inventory": 2,
+                "purchase_without_inventory": 3,
+                "ledger_master": 4,
+                "item_master": 5,
+                "excel_zip": 6,
+                "xml_zip": 7
+              }
+            },
+            "document": {
+              "type": "string",
+              "notes": ""
+            },
+            "tally_export_id": {
+              "type": "uuid",
+              "notes": "FK→tally_exports",
+              "fk": {
+                "table": "tally_exports",
+                "note": null
+              }
+            }
+          }
+        },
+        "consumable_credits": {
+          "name": "consumable_credits",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "consumable_credit_type": {
+              "type": "decimal",
+              "notes": "enum: ocr=0, wam=1",
+              "enum": {
+                "ocr": 0,
+                "wam": 1
+              }
+            },
+            "available_credits": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "grace_credits": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "consumable_transactions": {
+          "name": "consumable_transactions",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "consumable_credit_type": {
+              "type": "decimal",
+              "notes": "enum: ocr=0, wam=1",
+              "enum": {
+                "ocr": 0,
+                "wam": 1
+              }
+            },
+            "payment_status": {
+              "type": "decimal",
+              "notes": "enum: created=0, success=1",
+              "enum": {
+                "created": 0,
+                "success": 1
+              }
+            },
+            "credits": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "einvoice_details": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "payment_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "consumable_credit_id": {
+              "type": "uuid",
+              "notes": "FK→consumable_credits",
+              "fk": {
+                "table": "consumable_credits",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "voucher_source_links": {
+          "name": "voucher_source_links",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "entity_type": {
+              "type": "integer",
+              "notes": "enum: sam=0, recurring_invoice=1, cnb=2",
+              "enum": {
+                "sam": 0,
+                "recurring_invoice": 1,
+                "cnb": 2
+              }
+            },
+            "entity_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "voucher_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→vouchers",
+              "indexed": true,
+              "fk": {
+                "table": "vouchers",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "referrals": {
+          "name": "referrals",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "referral_code": {
+              "type": "string",
+              "notes": ""
+            },
+            "referrer_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "referral_type": {
+              "type": "integer",
+              "notes": "enum: normal=0, reseller=1",
+              "enum": {
+                "normal": 0,
+                "reseller": 1
+              }
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: purchase_pending=0, purchase_completed=1",
+              "enum": {
+                "purchase_pending": 0,
+                "purchase_completed": 1
+              }
+            },
+            "payout_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→payouts",
+              "indexed": true,
+              "fk": {
+                "table": "payouts",
+                "note": null
+              }
+            },
+            "subscription_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→subscriptions",
+              "indexed": true,
+              "fk": {
+                "table": "subscriptions",
+                "note": null
+              }
+            },
+            "referee_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→users",
+              "indexed": true,
+              "fk": {
+                "table": "users",
+                "note": null
+              }
+            },
+            "referrerable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "referrerable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK, indexed",
+              "indexed": true,
+              "polymorphic_id": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "payouts": {
+          "name": "payouts",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: \"payout_link.issued\"=0, \"payout_link.processing\"=1, \"payout_link.processed\"=2, \"payout_link.attempted\"=3, \"payout_link.cancelled\"=4",
+              "enum": {
+                "payout_link.issued": 0,
+                "payout_link.processing": 1,
+                "payout_link.processed": 2,
+                "payout_link.attempted": 3,
+                "payout_link.cancelled": 4
+              }
+            },
+            "payout_type": {
+              "type": "integer",
+              "notes": "enum: referral=0, campaign=1",
+              "enum": {
+                "referral": 0,
+                "campaign": 1
+              }
+            },
+            "transaction_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "referrer_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→users",
+              "indexed": true,
+              "fk": {
+                "table": "users",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "bank_statements": {
+          "name": "bank_statements",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "statement_name": {
+              "type": "string",
+              "notes": ""
+            },
+            "statement_file": {
+              "type": "string",
+              "notes": ""
+            },
+            "start_date": {
+              "type": "date",
+              "notes": ""
+            },
+            "end_date": {
+              "type": "date",
+              "notes": ""
+            },
+            "status": {
+              "type": "integer",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "bank_account_id": {
+              "type": "uuid",
+              "notes": "FK→bank_accounts",
+              "fk": {
+                "table": "bank_accounts",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "bank_statement_txns": {
+          "name": "bank_statement_txns",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "txn_date": {
+              "type": "date",
+              "notes": ""
+            },
+            "description": {
+              "type": "text",
+              "notes": ""
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "confidence_score": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "is_skip": {
+              "type": "boolean",
+              "notes": "default: false",
+              "default": "false"
+            },
+            "match_types": {
+              "type": "string[]",
+              "notes": "default: []",
+              "default": "[]"
+            },
+            "provider_transaction_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "bank_statement_id": {
+              "type": "uuid",
+              "notes": "FK→bank_statements",
+              "fk": {
+                "table": "bank_statements",
+                "note": null
+              }
+            },
+            "voucher_id": {
+              "type": "uuid",
+              "notes": "FK→vouchers",
+              "fk": {
+                "table": "vouchers",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "bank_statement_vouchers": {
+          "name": "bank_statement_vouchers",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "voucher_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "contact_name": {
+              "type": "string",
+              "notes": ""
+            },
+            "contact_mobile_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "contact_bank_account_no": {
+              "type": "string",
+              "notes": ""
+            },
+            "contact_upi_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "settled_amt": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "remaining_amount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "voucher_id": {
+              "type": "uuid",
+              "notes": "FK→vouchers",
+              "fk": {
+                "table": "vouchers",
+                "note": null
+              }
+            },
+            "contact_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "bank_statement_txn_id": {
+              "type": "uuid",
+              "notes": "FK→bank_statement_txns",
+              "fk": {
+                "table": "bank_statement_txns",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "messages": {
+          "name": "messages",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "content": {
+              "type": "string",
+              "notes": ""
+            },
+            "title": {
+              "type": "string",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": ""
+            },
+            "message_type": {
+              "type": "integer",
+              "notes": "enum: normal=0, push_notification=1, sms=2, whatsapp=3",
+              "enum": {
+                "normal": 0,
+                "push_notification": 1,
+                "sms": 2,
+                "whatsapp": 3
+              }
+            },
+            "is_read": {
+              "type": "boolean",
+              "notes": "default: false",
+              "default": "false"
+            },
+            "receiver_number": {
+              "type": "string",
+              "notes": ""
+            },
+            "messageable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "messageable_id": {
+              "type": "uuid",
+              "notes": ""
+            },
+            "user_id": {
+              "type": "uuid",
+              "notes": "FK→users",
+              "fk": {
+                "table": "users",
+                "note": null
+              }
+            }
+          }
+        },
+        "versions": {
+          "name": "versions",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "integer",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "item_type": {
+              "type": "string",
+              "notes": "not null",
+              "not_null": true
+            },
+            "item_id": {
+              "type": "uuid",
+              "notes": "not null",
+              "not_null": true
+            },
+            "event": {
+              "type": "string",
+              "notes": "not null (create/update/destroy)",
+              "not_null": true
+            },
+            "whodunnit": {
+              "type": "string",
+              "notes": ""
+            },
+            "ip": {
+              "type": "string",
+              "notes": ""
+            },
+            "user_agent": {
+              "type": "string",
+              "notes": ""
+            },
+            "object": {
+              "type": "text",
+              "notes": "up to 1GB"
+            },
+            "object_changes": {
+              "type": "text",
+              "notes": "up to 1GB"
+            },
+            "created_at": {
+              "type": "datetime",
+              "notes": ""
+            }
+          }
+        }
+      }
+    },
+    "phonepe": {
+      "display": "Phone Pe",
+      "tables": {
+        "pmp_merchants": {
+          "name": "pmp_merchants",
+          "phonepe": true,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "provider": {
+              "type": "integer",
+              "notes": "enum: phonepe=0, not null, default: 0",
+              "not_null": true,
+              "enum": {
+                "phonepe": 0
+              },
+              "default": "0"
+            },
+            "merchant_id": {
+              "type": "string",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "verification_status": {
+              "type": "integer",
+              "notes": "enum: pending=0, verified=1, failed=2, register_in_process=3",
+              "enum": {
+                "pending": 0,
+                "verified": 1,
+                "failed": 2,
+                "register_in_process": 3
+              }
+            },
+            "credentials": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "is_active": {
+              "type": "boolean",
+              "notes": "default: false",
+              "default": "false"
+            },
+            "store_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "verified_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, not null, FK→companies",
+              "indexed": true,
+              "not_null": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "bank_account_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→bank_accounts",
+              "indexed": true,
+              "fk": {
+                "table": "bank_accounts",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "pmp_qrs": {
+          "name": "pmp_qrs",
+          "phonepe": true,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "qr_type": {
+              "type": "integer",
+              "notes": "enum: dqr=0, sqr=1, link=2, not null",
+              "not_null": true,
+              "enum": {
+                "dqr": 0,
+                "sqr": 1,
+                "link": 2
+              }
+            },
+            "amount": {
+              "type": "decimal",
+              "notes": "precision: 15, scale: 4"
+            },
+            "qr_data": {
+              "type": "text",
+              "notes": ""
+            },
+            "payment_link": {
+              "type": "text",
+              "notes": ""
+            },
+            "provider_transaction_id": {
+              "type": "string",
+              "notes": ""
+            },
+            "provider_qr_id": {
+              "type": "string",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "status": {
+              "type": "integer",
+              "notes": "enum: active=0, used=1, expired=2, disabled=3",
+              "enum": {
+                "active": 0,
+                "used": 1,
+                "expired": 2,
+                "disabled": 3
+              }
+            },
+            "expires_at": {
+              "type": "timestamp",
+              "notes": ""
+            },
+            "meta": {
+              "type": "jsonb",
+              "notes": "default: {}",
+              "default": "{}"
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, not null",
+              "indexed": true,
+              "not_null": true
+            },
+            "pmp_merchant_id": {
+              "type": "uuid",
+              "notes": "indexed, not null, FK→pmp_merchants",
+              "indexed": true,
+              "not_null": true,
+              "fk": {
+                "table": "pmp_merchants",
+                "note": null
+              }
+            },
+            "voucher_id": {
+              "type": "uuid",
+              "notes": "indexed",
+              "indexed": true
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "constants": {
+    "SOURCES": {
+      "mobile": 0,
+      "web": 1,
+      "online_store": 2,
+      "vyapar": 3,
+      "admin": 4,
+      "desktop": 5,
+      "api": 6,
+      "ios": 7,
+      "tally": 8,
+      "mcf": 9
+    },
+    "VOUCHER_TYPES": {
+      "sales_invoice": 0,
+      "purchase_record": 1,
+      "payment_in": 2,
+      "payment_out": 3,
+      "credit": 4,
+      "quotation": 5,
+      "credit_note": 6,
+      "debit_note": 7,
+      "expense": 9,
+      "delivery_challan": 10,
+      "purchase_order": 11,
+      "add_money": 12,
+      "reduce_money": 13,
+      "proforma": 14,
+      "eway_bill": 15,
+      "credit_memo": 16,
+      "debit_memo": 17
+    },
+    "SUBSCRIPTION_TYPES": {
+      "trial": 0,
+      "lite": 1,
+      "standard": 2,
+      "silver": 3,
+      "gold": 4,
+      "diamond": 5,
+      "platinum": 6,
+      "enterprise": 7
+    },
+    "LANGUAGE_TYPES": {
+      "hinglish": 0,
+      "hindi": 1,
+      "english": 2,
+      "gujarati": 3,
+      "tamil": 4
+    },
+    "BUSINESS_TYPES": {
+      "retailer": 0,
+      "wholesaler": 1,
+      "distributor": 2,
+      "manufacturer": 3,
+      "retailer_wholesaler": 4,
+      "retailer_wholesaler_distributor_manufacturer_services": 30
+    },
+    "INDUSTRY_TYPES": {
+      "agriculture": 0,
+      "arts_and_design": 1,
+      "automotive": 2,
+      "construction": 3,
+      "consulting": 4,
+      "dairy": 5,
+      "education": 6,
+      "electronics": 7,
+      "engineering": 8,
+      "financial_services": 9,
+      "fruit_and_vegitables": 10,
+      "food_services": 11,
+      "garment": 12,
+      "general_store": 13,
+      "gift_shop": 14,
+      "government": 15,
+      "hardware": 16,
+      "healthcare": 17,
+      "information_technology": 18,
+      "logistics": 19,
+      "pharma": 20,
+      "meat": 21,
+      "metals_and_mining": 22,
+      "mobiles_and_accessories": 23,
+      "non_profit": 24,
+      "oil_and_gas": 25,
+      "services": 26,
+      "stationary": 27,
+      "travel": 28,
+      "fmcg": 29,
+      "others": 30,
+      "hotels": 31,
+      "laundry": 32,
+      "interior_design": 33,
+      "salon": 34,
+      "gym": 35,
+      "tailoring": 36,
+      "real_estate": 37,
+      "ngo_charity": 38,
+      "staffing_hr": 39,
+      "photo_studio": 40,
+      "cinema_themepark": 41,
+      "plumbing": 42,
+      "carpentry": 43,
+      "painting": 44,
+      "cleaning_pest": 45,
+      "photography": 46,
+      "auto_service": 47,
+      "cable_internet": 48,
+      "security": 49,
+      "electronics_repair": 50,
+      "event_planning": 51,
+      "plywood": 52,
+      "jewellery": 53,
+      "electrical_works": 54,
+      "paints": 55,
+      "machinery": 56,
+      "packaging": 57,
+      "sport_equiments": 58,
+      "utensils": 59,
+      "scrap": 60,
+      "sanitary": 61,
+      "liquor": 62,
+      "footwear": 63,
+      "battery": 64,
+      "furniture": 65,
+      "textiles": 66,
+      "opticals": 67,
+      "safety_equipments": 68,
+      "home_services": 69,
+      "service_centre": 70,
+      "medical_device": 71
+    },
+    "COMPANY_INCORPORATION_TYPE": {
+      "private_limited_company": 0,
+      "public_limited_company": 1,
+      "partnerships_company": 2,
+      "limited_liability_partnership": 3,
+      "one_person_company": 4,
+      "sole_proprietorship": 5,
+      "section_8_company": 6,
+      "business_not_registered": 7
+    },
+    "SUGGESTIONS_PLATFORM": {
+      "My BillBook": 0,
+      "Web": 1,
+      "Mobile": 2,
+      "Store": 3,
+      "iOS": 4,
+      "Offline Desktop": 5
+    }
+  },
+  "polymorphic": {
+    "addressable": {
+      "owner": "Address",
+      "types": [
+        "Company"
+      ]
+    },
+    "documentable": {
+      "owner": "Document",
+      "types": [
+        "Company",
+        "Invoice",
+        "Payment",
+        "ConsumableTransaction",
+        "GreetingEvent",
+        "GreetingInfo",
+        "BusinessCardTemplate",
+        "User"
+      ]
+    },
+    "itemable": {
+      "owner": "ContactItem",
+      "types": [
+        "InventoryItem"
+      ]
+    },
+    "infoable": {
+      "owner": "ItemInfo",
+      "types": [
+        "InventoryItem"
+      ]
+    },
+    "serializable": {
+      "owner": "ItemSerialNo",
+      "types": [
+        "InventoryItem",
+        "SubInventoryItem"
+      ]
+    },
+    "discountable": {
+      "owner": "Discount",
+      "types": [
+        "Invoice",
+        "Voucher"
+      ]
+    },
+    "chargeable": {
+      "owner": "AdditionalCharge",
+      "types": [
+        "Invoice",
+        "Voucher"
+      ]
+    },
+    "voucherable": {
+      "owner": "Voucher",
+      "types": [
+        "Invoice",
+        "Payment",
+        "ConsumableTransaction"
+      ]
+    },
+    "codable": {
+      "owner": "QrCode",
+      "types": [
+        "Company"
+      ]
+    },
+    "thumbnailable": {
+      "owner": "Thumbnail",
+      "types": [
+        "InventoryItem"
+      ]
+    },
+    "messageable": {
+      "owner": "Message",
+      "types": [
+        "User"
+      ]
+    },
+    "accountable": {
+      "owner": "VirtualAccount",
+      "types": [
+        "Company"
+      ]
+    },
+    "referrerable": {
+      "owner": "Referral",
+      "types": [
+        "User"
+      ]
+    },
+    "remindable": {
+      "owner": "Reminder",
+      "types": [
+        "Company"
+      ]
+    },
+    "rewardable": {
+      "owner": "Reward",
+      "types": [
+        "MbbPayTransaction",
+        "Company"
+      ]
+    },
+    "kycable": {
+      "owner": "KycEntity",
+      "types": [
+        "Company",
+        "BankAccount"
+      ]
+    },
+    "fileable": {
+      "owner": "PrivFile, ClientFile",
+      "types": [
+        "Company"
+      ]
+    },
+    "offerable": {
+      "owner": "OfferLink",
+      "types": [
+        "InventoryItem",
+        "SubInventoryItem"
+      ]
+    },
+    "mappable": {
+      "owner": "OcrMapping",
+      "types": [
+        "Company",
+        "InventoryItem"
+      ]
+    },
+    "recordable": {
+      "owner": "PaymentRecord",
+      "types": [
+        "Invoice"
+      ]
+    },
+    "link_source_type": {
+      "owner": "PaymentRecord",
+      "types": [
+        "Payment",
+        "Invoice (for CN/DN links)"
+      ]
+    }
+  }
+}
