@@ -12,10 +12,4 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     });
     return true; // async
   }
-  if (msg?.type === "forwardToTab" && msg.tabId != null) {
-    chrome.tabs.sendMessage(msg.tabId, msg.payload, (response) => {
-      sendResponse(response);
-    });
-    return true; // async
-  }
 });

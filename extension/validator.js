@@ -24,7 +24,7 @@ const SQL_KEYWORDS = new Set([
   "with", "recursive", "over", "partition", "window", "using", "lateral",
   "rollup", "cube", "grouping", "sets",
   "returning", "values", "insert", "update", "delete", "set",
-  "filter", "within", "fetch", "first", "next", "rows", "only",
+  "filter", "filtered", "within", "fetch", "first", "next", "rows", "only",
   "tablesample", "repeatable",
   "at", "zone",
   "isnull", "notnull", "overlaps", "row",
@@ -134,10 +134,17 @@ function splitDotted(tok) {
 function extractFromTables(sqlClean) {
   // Capture the identifier after FROM, JOIN, UPDATE, INTO (bare table refs).
   // Also handles schema-qualified "public.invoices" by splitting on '.'.
+  // We skip FROM/JOIN inside parentheses to avoid false matches from
+  // EXTRACT(... FROM ...), date_part(...), and subquery internals.
   const out = [];
   const re = /\b(?:from|join|update|into)\s+("[^"]+"|[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*)/gi;
   let m;
   while ((m = re.exec(sqlClean)) !== null) {
+    // Check if this FROM/JOIN is inside parentheses by counting
+    // unmatched '(' before the match position.
+    const prefix = sqlClean.slice(0, m.index);
+    const depth = (prefix.match(/\(/g) || []).length - (prefix.match(/\)/g) || []).length;
+    if (depth > 0) continue; // inside parens — skip (likely EXTRACT, subquery, etc.)
     const raw = m[1].replace(/"/g, "");
     const parts = raw.split(".");
     out.push(parts[parts.length - 1].toLowerCase());
@@ -150,24 +157,42 @@ function extractFromTables(sqlClean) {
 // false positives would block legitimate SQL.
 function extractBareColumnRefs(sqlClean) {
   const out = new Set();
+  const selectAliases = new Set(); // track AS aliases so they aren't flagged
+
   // SELECT <cols> FROM
   const selectM = sqlClean.match(/\bselect\s+([\s\S]*?)\bfrom\b/i);
-  if (selectM) collectIdentifiers(selectM[1], out);
+  if (selectM) {
+    collectIdentifiers(selectM[1], out);
+    // Extract SELECT aliases (... AS alias_name) so they can be skipped in ORDER BY etc.
+    const aliasRe = /\bAS\s+([a-z_][a-z0-9_]*)\b/gi;
+    let am;
+    while ((am = aliasRe.exec(selectM[1])) !== null) {
+      selectAliases.add(am[1].toLowerCase());
+    }
+  }
   // WHERE ... (stops at GROUP/ORDER/LIMIT/HAVING/RETURNING)
-  const whereM = sqlClean.match(/\bwhere\s+([\s\S]*?)(?:\bgroup\s+by\b|\border\s+by\b|\blimit\b|\bhaving\b|\breturning\b|;|$)/i);
+  // Use only the top-level WHERE (not inside FILTER(WHERE ...) or subqueries).
+  // We strip content inside FILTER(...) before matching.
+  const forWhere = sqlClean.replace(/\bFILTER\s*\([^)]*\)/gi, ' ');
+  const whereM = forWhere.match(/\bwhere\s+([\s\S]*?)(?:\bgroup\s+by\b|\border\s+by\b|\blimit\b|\bhaving\b|\breturning\b|;|$)/i);
   if (whereM) collectIdentifiers(whereM[1], out);
   // ORDER BY / GROUP BY / HAVING
   const gbM = sqlClean.match(/\bgroup\s+by\s+([\s\S]*?)(?:\border\s+by\b|\blimit\b|\bhaving\b|;|$)/i);
   if (gbM) collectIdentifiers(gbM[1], out);
   const obM = sqlClean.match(/\border\s+by\s+([\s\S]*?)(?:\blimit\b|;|$)/i);
   if (obM) collectIdentifiers(obM[1], out);
+
+  // Remove SELECT aliases from the set — they're not column references.
+  for (const a of selectAliases) out.delete(a);
   return [...out];
 }
 
 function collectIdentifiers(fragment, set) {
   // Match identifiers that are NOT preceded by a dot (those are dotted refs
-  // handled elsewhere) and NOT followed by '(' (function call).
-  const re = /(?<![\w.])([a-z_][a-z0-9_]*)(?!\s*\()/gi;
+  // handled elsewhere), NOT followed by '(' (function call), and NOT
+  // preceded by AS (column alias). The \b after the capture group prevents
+  // backtracking from matching partial words (e.g. "coun" from "count(id)").
+  const re = /(?<![\w.])(?<!\bAS\s)([a-z_][a-z0-9_]*)\b(?!\s*\()/gi;
   let m;
   while ((m = re.exec(fragment)) !== null) {
     const id = m[1].toLowerCase();
@@ -202,13 +227,28 @@ export function validateSql(sql, schema, dbKey /* 'flobooks' | 'phonepe' */) {
   const fromTables = extractFromTables(clean);
   const aliases = extractAliases(clean);
 
+  // Extract CTE names (WITH name AS (...), name2 AS (...)) so they aren't
+  // flagged as unknown tables when referenced in FROM/JOIN.
+  const cteNames = new Set();
+  const cteRe = /\bWITH\s+(?:RECURSIVE\s+)?/gi;
+  let cteM;
+  while ((cteM = cteRe.exec(clean)) !== null) {
+    // Walk comma-separated CTE definitions: name AS (...)
+    const rest = clean.slice(cteM.index + cteM[0].length);
+    const nameRe = /([a-zA-Z_][a-zA-Z0-9_]*)\s+AS\s*\(/gi;
+    let nm;
+    while ((nm = nameRe.exec(rest)) !== null) {
+      cteNames.add(nm[1].toLowerCase());
+    }
+  }
+
   const errors = [];
   const unknownTables = [];
   const unknownColumns = [];
 
-  // 1. Every FROM/JOIN target must exist in the schema.
+  // 1. Every FROM/JOIN target must exist in the schema (or be a CTE name).
   for (const t of fromTables) {
-    if (!tables[t]) {
+    if (!tables[t] && !cteNames.has(t)) {
       unknownTables.push(t);
       errors.push(`Table "${t}" is not in the ${db.display} schema.`);
     }
@@ -266,7 +306,11 @@ export function validateSql(sql, schema, dbKey /* 'flobooks' | 'phonepe' */) {
   // 2b. Bare column references in SELECT / WHERE / ORDER BY when the FROM
   //     clause names a single table (no alias ambiguity). This catches
   //     cases like `SELECT foo FROM invoices` where foo isn't a column.
-  if (fromTables.length === 1) {
+  //     Skip this check for complex queries (CTEs, subqueries, window fns)
+  //     because bare-column extraction isn't reliable for those patterns.
+  const hasSubquery = /\b(WITH|SELECT)\b[\s\S]*\bSELECT\b/i.test(clean);
+  const hasWindowFn = /\bOVER\s*\(/i.test(clean);
+  if (fromTables.length === 1 && !hasSubquery && !hasWindowFn) {
     const onlyTable = fromTables[0];
     const def = tables[onlyTable];
     if (def) {

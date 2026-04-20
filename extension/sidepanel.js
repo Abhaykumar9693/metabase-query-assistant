@@ -124,7 +124,13 @@ document.querySelectorAll(".tab").forEach((btn) => {
 
 async function getActiveTabInfo() {
   return new Promise((resolve) => {
-    chrome.runtime.sendMessage({ type: "getActiveTabId" }, (response) => resolve(response));
+    chrome.runtime.sendMessage({ type: "getActiveTabId" }, (response) => {
+      if (chrome.runtime.lastError) {
+        resolve(null);
+        return;
+      }
+      resolve(response);
+    });
   });
 }
 
@@ -153,6 +159,9 @@ async function sendToTabOnce(tabId, msg) {
 }
 
 async function detectSelectedDb() {
+  if (!state.schema) {
+    return { dbKey: null, dbDisplay: null, reason: "not-detected", debugDetail: "schema not loaded yet" };
+  }
   const settings = await getSettings();
   const extra = settings.extraFlobooksDbs
     .split(",")
@@ -846,10 +855,15 @@ document.getElementById("saveSettings").addEventListener("click", async () => {
 // --- init ------------------------------------------------------------------
 
 (async () => {
-  await loadSchema();
-  await hydrateSettings();
-  await refreshDbStatus();
-  state.conversation = await loadConversation();
-  renderConversation();
-  renderExplore("");
+  try {
+    await loadSchema();
+    await hydrateSettings();
+    await refreshDbStatus();
+    state.conversation = await loadConversation();
+    renderConversation();
+    renderExplore("");
+  } catch (err) {
+    console.error("MBB Query Assistant init failed:", err);
+    setGenStatus(`Init failed: ${err.message || err}. Try reloading the extension.`, true);
+  }
 })();
