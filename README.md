@@ -15,7 +15,7 @@ Chrome extension that writes SQL into Metabase's native query editor (`metabase.
 cd metabase-query-assistant
 
 # 1. Build schema.json from the reference .md
-node scripts/build-schema.mjs  https://flobiz.atlassian.net/wiki/spaces/QA/pages/2910289955/Comprehensive+Database+Schema+Relationships+Enums+Reference?atlOrigin=eyJpIjoiZTYyMTM4YTEwMjdlNGU0ZDhiMzJmYjQ1OWM2NTI0MmEiLCJwIjoiY29uZmx1ZW5jZS1jaGF0cy1pbnQifQ
+node scripts/build-schema.mjs  "https://flobiz.atlassian.net/wiki/spaces/QA/pages/2910289955/Comprehensive+Database+Schema+Relationships+Enums+Reference?atlOrigin=eyJpIjoiZTYyMTM4YTEwMjdlNGU0ZDhiMzJmYjQ1OWM2NTI0MmEiLCJwIjoiY29uZmx1ZW5jZS1jaGF0cy1pbnQifQ"
 
 # 2. (Optional) Run validator smoke tests
 node scripts/test-validator.mjs
