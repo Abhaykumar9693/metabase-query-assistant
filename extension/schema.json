@@ -1,6 +1,6 @@
 {
-  "source_sha256": "02514b13e32e",
-  "generated_at": "2026-04-20T05:20:08.456Z",
+  "source_sha256": "49f8ae041191",
+  "generated_at": "2026-04-20T09:01:16.111Z",
   "metabase_db_map": {
     "Flobooks": "flobooks",
     "flobooksMetabase": "flobooks",
@@ -2902,6 +2902,221 @@
             "txn_date": {
               "type": "date",
               "notes": ""
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "units": {
+          "name": "units",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "unit_long": {
+              "type": "string",
+              "notes": "full name (e.g. METERS, PIECES)"
+            },
+            "unit_short": {
+              "type": "string",
+              "notes": "abbreviation (e.g. MTR, PCS)"
+            },
+            "unit_code": {
+              "type": "string",
+              "notes": "unique code"
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "item_categories": {
+          "name": "item_categories",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "name": {
+              "type": "string",
+              "notes": ""
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "item_unit_conversions": {
+          "name": "item_unit_conversions",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "conversion_factor": {
+              "type": "decimal",
+              "notes": "ratio to convert base_unit to target_unit"
+            },
+            "base_unit_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→units",
+              "indexed": true,
+              "fk": {
+                "table": "units",
+                "note": null
+              }
+            },
+            "target_unit_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→units",
+              "indexed": true,
+              "fk": {
+                "table": "units",
+                "note": null
+              }
+            },
+            "inventory_item_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→inventory_items",
+              "indexed": true,
+              "fk": {
+                "table": "inventory_items",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "item_serial_nos": {
+          "name": "item_serial_nos",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "serial_no": {
+              "type": "string",
+              "notes": ""
+            },
+            "is_available": {
+              "type": "boolean",
+              "notes": ""
+            },
+            "serializable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "serializable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK, indexed",
+              "indexed": true,
+              "polymorphic_id": true
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "FK→companies",
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "deleted_at": {
+              "type": "timestamp",
+              "notes": "soft delete",
+              "soft_delete": true
+            }
+          }
+        },
+        "contact_items": {
+          "name": "contact_items",
+          "phonepe": false,
+          "columns": {
+            "id": {
+              "type": "uuid",
+              "notes": "PK",
+              "primary_key": true
+            },
+            "price_per_unit": {
+              "type": "decimal",
+              "notes": "contact-specific price"
+            },
+            "discount": {
+              "type": "decimal",
+              "notes": ""
+            },
+            "discount_type": {
+              "type": "integer",
+              "notes": "enum: amount=0, percentage=1",
+              "enum": {
+                "amount": 0,
+                "percentage": 1
+              }
+            },
+            "itemable_type": {
+              "type": "string",
+              "notes": "polymorphic type",
+              "polymorphic_type": true
+            },
+            "itemable_id": {
+              "type": "uuid",
+              "notes": "polymorphic FK, indexed",
+              "indexed": true,
+              "polymorphic_id": true
+            },
+            "contact_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
+            },
+            "company_id": {
+              "type": "uuid",
+              "notes": "indexed, FK→companies",
+              "indexed": true,
+              "fk": {
+                "table": "companies",
+                "note": null
+              }
             },
             "deleted_at": {
               "type": "timestamp",
