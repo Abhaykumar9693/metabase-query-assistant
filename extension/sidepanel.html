@@ -28,6 +28,7 @@
         <span id="dbStatus" class="badge badge-unknown">detecting…</span>
         <button id="refreshDb" class="btn-tiny" title="Re-detect">↻</button>
         <span class="spacer"></span>
+        <span id="correctionsCount" class="corrections-count"></span>
         <button id="newConvoBtn" class="btn-tiny" title="Start a fresh conversation (forgets history)">↺ new chat</button>
       </div>
     </div>
@@ -95,6 +96,17 @@
 
     <button id="saveSettings" class="btn-primary">Save</button>
     <span id="saveStatus" class="save-status"></span>
+
+    <hr style="margin: 16px 0; border: none; border-top: 1px solid #e5e5e5;">
+    <label class="field-label">Auto-Improvement (Learned Corrections)</label>
+    <p class="helper">
+      When you mark a query as "Wrong", the correction is saved here and injected into every future prompt so the model never repeats the same mistake.
+    </p>
+    <div id="correctionsList" class="corrections-list"></div>
+    <div class="action-row" style="margin-top: 8px;">
+      <button id="clearCorrections" class="btn-secondary">Clear all corrections</button>
+      <span id="clearCorrectionsStatus" class="save-status"></span>
+    </div>
   </section>
 
   <script type="module" src="sidepanel.js"></script>

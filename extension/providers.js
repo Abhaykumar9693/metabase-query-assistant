@@ -124,6 +124,12 @@ COMPANIES TABLE (dual-purpose — THE most important concept):
 
 INVOICES & VOUCHERS:
 - invoices.invoice_type: sales_invoice=0, purchase_record=1, quotation=2, credit_note=3, debit_note=4, delivery_challan=5, purchase_order=6, proforma=7, credit_memo=8, debit_memo=9.
+- invoices.status: draft=0, final=1. ALWAYS filter status=1 for financial queries (exclude drafts).
+- invoices.total_amount = final invoice total. invoices.remaining_amount = unpaid portion (decremented as payments are linked). invoices.initial_payment_amount = cash portion paid at creation.
+- Paid: remaining_amount = 0. Unpaid: remaining_amount = total_amount. Partially paid: 0 < remaining_amount < total_amount.
+- Overdue: remaining_amount > 0 AND due_date < CURRENT_DATE.
+- NON-BALANCE-AFFECTING types: quotation, purchase_order, delivery_challan, proforma, eway_bill. EXCLUDE these from financial reports.
+- Cancelled invoices: have BOTH deleted_at IS NOT NULL AND cancelled_at IS NOT NULL.
 - Each Invoice has one Voucher (polymorphic: voucherable_type='Invoice', voucherable_id=invoice.id).
 - IMPORTANT: voucher.voucher_type integers DIFFER from invoice.invoice_type! voucher_type: sales_invoice=0, purchase_record=1, payment_in=2, payment_out=3, credit=4, quotation=5, credit_note=6, debit_note=7, expense=9, delivery_challan=10, purchase_order=11, add_money=12, reduce_money=13, proforma=14, eway_bill=15, credit_memo=16, debit_memo=17.
 - Payment ↔ Invoice linked via payment_records join table (recordable_type='Invoice', recordable_id=invoice.id).
@@ -145,14 +151,16 @@ LEDGERS & ACCOUNTING:
 - vouchers: the accounting wrapper for invoices/payments. Most analytical queries should go through vouchers since it's the unified accounting entity with amount, voucher_date, serial_number, voucher_type.
 
 USERS & ACCESS:
-- users connect to companies via roles (join table). role_type: admin, accountant, partner, etc.
+- users connect to companies via roles (join table). role_type: admin=0, partner=1, salesman=2, stock_manager=3, collection_agent=4, accountant=5. Roles have deactivated_at — only active roles (deactivated_at IS NULL) should be used.
+- IMPORTANT — MOBILE NUMBER LOOKUP: companies.mobile_number is the BUSINESS PROFILE number (unreliable — many companies store the same number). users.mobile_number is the USER'S LOGIN number (unique, reliable). When the user asks "company associated with this number" or "find company by mobile", ALWAYS join through users: users.mobile_number → roles.user_id → roles.company_id → companies. NEVER filter on companies.mobile_number for user lookup.
 - subscriptions belong to USERS (NOT companies — there is NO subscriptions.company_id column). To find a company's subscription: subscriptions → users → roles → companies. subscription_type: trial=0, lite=1, standard=2, silver=3, gold=4, diamond=5, platinum=6, enterprise=7. renewal_type: NONE=0, YEARLY=1, HALFYEARLY=2, QUARTERLY=3, BIMONTHLY=4, MONTHLY=5, WEEKLY=6.
 - login_activities: tracks login events. login_type: web=0, mobile=1, desktop=2, ios=3, tally=4.
 
 PAYMENTS & BANKING:
 - payments: standalone payment_in=0 or payment_out=1 records. payment_mode: cash=0, cheque=1, online=2, bank=3, upi=4, card=5, netbanking=6.
 - bank_accounts: linked bank accounts. bank_account_type: bank_account=0, upi=1.
-- wallets: stores opening_balance, closing_balance, credit_limit, credit_period for contacts.
+- wallets: stores opening_balance, closing_balance, credit_limit, credit_period for contacts (parties). closing_balance > 0 means party OWES you (receivable). closing_balance < 0 means YOU OWE the party (payable). Wallet belongs to the contact Company record.
+- PARTY BALANCE FORMULA: closing_balance = SUM(sales_like net) - SUM(purchase_like net) + opening_balance. Net amount = amount - COALESCE(initial_payment_amt, 0) - COALESCE(tds_amount, 0). Sales-like vouchers (increase balance): sales_invoice, payment_out, debit_note, debit_memo, credit. Purchase-like vouchers (decrease balance): purchase_record, payment_in, credit_note, credit_memo, expense.
 - mbb_pay_transactions: MBB Pay collection transactions. payment_type: IMPS=0, NEFT=1, UPI=2, RTGS=3, FT=4. status: PENDING=0, PROCESSING=1, SETTLED=2.
 - bank_statements → bank_statement_txns → bank_statement_vouchers: bank reconciliation chain. txns have txn_date, amount, description, confidence_score.
 
@@ -218,8 +226,16 @@ SUBSCRIPTION STATUS:
 
 PAYMENT RECONCILIATION:
 - payment_records links payments to invoices. recordable_type='Invoice', recordable_id=invoice.id.
-- Amount paid against an invoice = SUM(pr.amount) FROM payment_records pr WHERE pr.recordable_id = invoice.id AND pr.recordable_type = 'Invoice'.
-- Outstanding = invoice.total_amount - SUM(payment_records.amount).
+- CRITICAL: payment_records has DUAL polymorphism. link_source_type='Payment' means payment_id → payments.id. link_source_type='Invoice' means payment_id → invoices.id (credit/debit note links). Always filter link_source_type when joining.
+- Amount paid against an invoice = SUM(pr.amount) FROM payment_records pr WHERE pr.recordable_id = invoice.id AND pr.recordable_type = 'Invoice' AND pr.link_source_type = 'Payment'.
+- Outstanding = invoice.remaining_amount (stored directly, no need to calculate).
+
+TOTAL SALES / PURCHASE (P&L):
+- Total Sales = SUM(total_amount) FROM invoices WHERE invoice_type=0 AND status=1 AND deleted_at IS NULL (filter by invoice_date for date range).
+- Total Purchase = SUM(total_amount) FROM invoices WHERE invoice_type=1 AND status=1 AND deleted_at IS NULL.
+- Sales Return = SUM(total_amount) WHERE invoice_type IN (3, 8) (credit_note + credit_memo).
+- Purchase Return = SUM(total_amount) WHERE invoice_type IN (4, 9) (debit_note + debit_memo).
+- Net Sales = Total Sales - Sales Return. Net Purchase = Total Purchase - Purchase Return.
 
 TOP N PATTERNS:
 - Top customers by revenue: SUM(v.amount) GROUP BY v.contact_id with voucher_type=0 (sales_invoice), JOIN companies for name.
@@ -292,6 +308,7 @@ Users often use informal, colloquial, or Hindi-English (Hinglish) terms. Always 
 - "serial number" / "IMEI" → item_serial_nos table
 - "low stock" / "out of stock" → ii.quantity <= ii.minimum_quantity
 - "like this user" / "for N users" / "similar companies" → filter/group by company_id, possibly using a subquery to find matching companies
+- "company for this number" / "associated with mobile" / "this no." / "find by phone" → ALWAYS use users.mobile_number joined through roles to companies — NEVER companies.mobile_number (that's unreliable business profile data)
 - "active" / "inactive" (for subscriptions) → check activated_at/expired_at date range
 - "tally" / "tally export" / "tally sync" → tally_exports, tally_export_files, or source=8
 
@@ -331,7 +348,43 @@ The ONLY time you may use CANNOT_ANSWER is if the question is about a completely
 
 == HARD RULES ==
 
-1. Output ONLY the SQL query. No explanation, no markdown fences, no trailing prose.
+1. ALWAYS start your output with an INTENT BLOCK — a SQL comment block that analyzes the user's question BEFORE writing any SQL. This is mandatory for every response. Format:
+-- INTENT: <what the user is actually asking for, in one clear sentence>
+-- TABLES: <which tables are needed and why>
+-- JOINS: <the join path with FK columns>
+-- FILTERS: <what WHERE conditions are needed, with enum integers>
+-- NOTES: <any assumptions made, edge cases handled, or traps avoided>
+Then write the SQL query after the intent block. No markdown fences, no trailing prose after the SQL.
+
+Example for "company associated with this no. 9693217226":
+-- INTENT: Find companies where user's login mobile number is 9693217226
+-- TABLES: users (login number), roles (user→company link), companies (business entity)
+-- JOINS: users.id → roles.user_id → roles.company_id → companies.id
+-- FILTERS: users.mobile_number = '9693217226', company_contact_type = 0 (business), active roles only
+-- NOTES: Using users.mobile_number NOT companies.mobile_number (that's unreliable business profile data)
+SELECT c.id, c.name
+FROM users u
+JOIN roles r ON r.user_id = u.id AND r.deactivated_at IS NULL AND r.deleted_at IS NULL
+JOIN companies c ON c.id = r.company_id AND c.deleted_at IS NULL
+WHERE u.mobile_number = '9693217226'
+  AND u.deleted_at IS NULL
+  AND c.company_contact_type = 0;
+
+Example for "total sales and purchase this FY":
+-- INTENT: Get total sales amount and total purchase amount for current Indian Financial Year
+-- TABLES: invoices (has total_amount, invoice_type, invoice_date)
+-- JOINS: none needed, direct query on invoices
+-- FILTERS: invoice_type 0 for sales, 1 for purchase, status=1 (final only), FY 2025-26 = Apr 2025 to Mar 2026
+-- NOTES: Excluding drafts (status=1). Excluding non-balance types. Using invoice_date not created_at.
+SELECT
+  SUM(CASE WHEN invoice_type = 0 THEN total_amount ELSE 0 END) AS total_sales,
+  SUM(CASE WHEN invoice_type = 1 THEN total_amount ELSE 0 END) AS total_purchase
+FROM invoices
+WHERE company_id = :company_id
+  AND status = 1
+  AND invoice_type IN (0, 1)
+  AND invoice_date >= '2025-04-01' AND invoice_date < '2026-04-01'
+  AND deleted_at IS NULL;
 2. Use ONLY tables and columns listed in the schema JSON below. Do NOT invent or guess. Use "-- CANNOT_ANSWER: <reason>" ONLY as an absolute last resort when you are certain no combination of listed tables/columns could possibly answer the question — e.g. the user asks about a completely unrelated system.
 3. KEEP QUERIES SHORT AND MINIMAL. Select ONLY the columns the user actually asked about — typically 2-4 columns (usually id + name + the filter attribute). NEVER enumerate every column on a table. NEVER SELECT *. If the user says "companies with silver plan", return \`SELECT c.id, c.name FROM ...\`, not all 25 columns.
 4. Use the SIMPLEST join path that works. Prefer direct FKs over multi-hop traversals. If a table has a direct company_id FK, use it directly — don't route through roles/users unless the user explicitly asks about user-level data. EXCEPTION: subscriptions has NO company_id — always join through users → roles.
@@ -348,8 +401,22 @@ If the request is ambiguous (e.g. no company_id), use :company_id as a placehold
 Schema JSON (authoritative — nothing outside this exists):
 `;
 
-export function buildSystemPrompt(schema, dbKey) {
-  return SYSTEM_PROMPT_HEAD + "\n" + JSON.stringify(compactSchema(schema, dbKey));
+export function buildSystemPrompt(schema, dbKey, corrections = []) {
+  let prompt = SYSTEM_PROMPT_HEAD + "\n" + JSON.stringify(compactSchema(schema, dbKey));
+  // Inject learned corrections as few-shot examples so the model never
+  // repeats the same mistake twice.
+  if (corrections.length) {
+    const MAX_CORRECTIONS = 20; // keep prompt size bounded
+    const recent = corrections.slice(-MAX_CORRECTIONS);
+    prompt += "\n\n== LEARNED CORRECTIONS (from past mistakes — NEVER repeat these) ==\n";
+    prompt += "Each correction shows a question, the WRONG SQL, and the CORRECT SQL. Always follow the CORRECT pattern.\n\n";
+    for (const c of recent) {
+      prompt += `Question: ${c.question}\nWRONG: ${c.wrongSql}\nCORRECT: ${c.correctSql}`;
+      if (c.lesson) prompt += `\nLesson: ${c.lesson}`;
+      prompt += "\n---\n";
+    }
+  }
+  return prompt;
 }
 
 export function extractSql(text) {

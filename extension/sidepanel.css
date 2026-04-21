@@ -179,6 +179,18 @@ textarea:focus, input:focus {
 }
 .turn-header .meta { display: flex; align-items: center; gap: 6px; }
 .turn-header .actions { display: flex; gap: 6px; }
+/* --- Intent analysis block --- */
+.intent-block {
+  padding: 8px 10px;
+  font-size: 11px;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  line-height: 1.5;
+  background: #e8f0fe;
+  color: #1a557a;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-bottom: 1px solid #c8d8e8;
+}
 .turn .sql-output { max-height: 320px; }
 .turn-errors {
   padding: 6px 10px;
@@ -347,3 +359,93 @@ select {
 .helper { font-size: 11px; color: #888; margin: 4px 0 0; }
 .helper a { color: #1a73e8; }
 .save-status { margin-left: 10px; font-size: 11px; color: #137333; }
+
+/* --- "Wrong" button --- */
+.btn-wrong {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #dadce0;
+  background: #fff;
+  color: #c5221f;
+}
+.btn-wrong:hover { background: #fce8e6; border-color: #c5221f; }
+
+/* --- Corrections count badge --- */
+.corrections-count {
+  font-size: 10px;
+  color: #137333;
+  background: #e6f4ea;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+/* --- Correction dialog overlay --- */
+.correction-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.correction-modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  width: 92%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.correction-modal h3 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #c5221f;
+}
+.correction-modal textarea,
+.correction-modal input[type="text"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.correction-modal textarea { font-family: "SF Mono", Menlo, monospace; font-size: 11px; }
+
+/* --- Corrections list in settings --- */
+.corrections-list { margin-top: 8px; }
+.correction-item {
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+.correction-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  background: #f8f9fa;
+  font-size: 11px;
+}
+.correction-item-q { color: #333; font-weight: 500; }
+.correction-item-lesson {
+  padding: 4px 8px;
+  font-size: 10px;
+  color: #5f6368;
+  border-top: 1px solid #eee;
+}
+.correction-delete {
+  color: #c5221f !important;
+  border-color: #fce8e6 !important;
+  font-size: 10px !important;
+  padding: 0 5px !important;
+  height: 18px !important;
+}

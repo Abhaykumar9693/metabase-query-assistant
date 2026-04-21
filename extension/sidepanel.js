@@ -8,6 +8,7 @@ import {
 
 const METABASE_HOST = "metabase.flobiz.in";
 const CONVO_SESSION_KEY = "mbbqa:conversation";
+const CORRECTIONS_KEY = "mbbqa:corrections";
 // Messages per turn = user ask + assistant SQL. Cap history to keep prompts small.
 const MAX_TURNS = 12;
 // Automatic retry when validator rejects — gives the model one more chance.
@@ -107,6 +108,95 @@ async function clearConversation() {
   state.dbKeyForSystemPrompt = null;
   await saveConversation();
   renderConversation();
+}
+
+// --- corrections (auto-improvement) ----------------------------------------
+// Corrections are persisted in chrome.storage.local (survives browser restart).
+// Each correction: { question, wrongSql, correctSql, lesson, timestamp }
+
+async function loadCorrections() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get([CORRECTIONS_KEY], (items) => {
+      resolve(Array.isArray(items[CORRECTIONS_KEY]) ? items[CORRECTIONS_KEY] : []);
+    });
+  });
+}
+
+async function saveCorrection(correction) {
+  const corrections = await loadCorrections();
+  corrections.push({ ...correction, timestamp: Date.now() });
+  return new Promise((resolve) => {
+    chrome.storage.local.set({ [CORRECTIONS_KEY]: corrections }, resolve);
+  });
+}
+
+async function deleteCorrection(index) {
+  const corrections = await loadCorrections();
+  corrections.splice(index, 1);
+  return new Promise((resolve) => {
+    chrome.storage.local.set({ [CORRECTIONS_KEY]: corrections }, resolve);
+  });
+}
+
+async function clearAllCorrections() {
+  return new Promise((resolve) => {
+    chrome.storage.local.set({ [CORRECTIONS_KEY]: [] }, resolve);
+  });
+}
+
+// Find the user question that preceded a given assistant turn index.
+function findQuestionForTurn(turnIndex) {
+  for (let i = turnIndex - 1; i >= 0; i--) {
+    if (state.conversation[i].role === "user") return state.conversation[i].content;
+  }
+  return "(unknown question)";
+}
+
+function showCorrectionDialog(turnIndex, wrongSql) {
+  const question = findQuestionForTurn(turnIndex);
+  // Create modal overlay
+  const overlay = document.createElement("div");
+  overlay.className = "correction-overlay";
+  overlay.innerHTML = `
+    <div class="correction-modal">
+      <h3>Mark as Wrong & Teach Correct Query</h3>
+      <label class="field-label">Question</label>
+      <textarea class="correction-question" rows="2" readonly>${question}</textarea>
+      <label class="field-label">Wrong SQL (generated)</label>
+      <textarea class="correction-wrong" rows="3" readonly>${wrongSql}</textarea>
+      <label class="field-label">Correct SQL (paste the right query)</label>
+      <textarea class="correction-correct" rows="5" placeholder="Paste the correct SQL here..."></textarea>
+      <label class="field-label">Lesson (what went wrong — optional)</label>
+      <input class="correction-lesson" type="text" placeholder="e.g. Should use users.mobile_number not companies.mobile_number">
+      <div class="action-row" style="margin-top:12px">
+        <button class="btn-primary correction-save">Save Correction</button>
+        <button class="btn-secondary correction-cancel">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelector(".correction-cancel").addEventListener("click", () => overlay.remove());
+  overlay.querySelector(".correction-save").addEventListener("click", async () => {
+    const correctSql = overlay.querySelector(".correction-correct").value.trim();
+    if (!correctSql) {
+      alert("Please paste the correct SQL.");
+      return;
+    }
+    const lesson = overlay.querySelector(".correction-lesson").value.trim();
+    await saveCorrection({ question, wrongSql, correctSql, lesson });
+    overlay.remove();
+    setGenStatus(`Correction saved. The model will learn from this.`);
+    setTimeout(() => setGenStatus(""), 3000);
+    renderCorrectionsCount();
+  });
+}
+
+function renderCorrectionsCount() {
+  loadCorrections().then((corrections) => {
+    const el = document.getElementById("correctionsCount");
+    if (el) el.textContent = corrections.length ? `${corrections.length} correction${corrections.length === 1 ? "" : "s"} saved` : "";
+  });
 }
 
 // --- tabs ------------------------------------------------------------------
@@ -267,12 +357,12 @@ function renderConversation() {
       const copyBtn = document.createElement("button");
       copyBtn.className = "btn-secondary";
       copyBtn.textContent = "Copy";
-      copyBtn.addEventListener("click", () => copySql(m.sql, copyBtn));
+      copyBtn.addEventListener("click", () => copySql(stripIntentBlock(m.sql), copyBtn));
       const insertBtn = document.createElement("button");
       insertBtn.className = "btn-primary";
       if (m.validation?.ok) {
         insertBtn.textContent = "Insert";
-        insertBtn.addEventListener("click", () => insertSqlIntoMetabase(m.sql));
+        insertBtn.addEventListener("click", () => insertSqlIntoMetabase(stripIntentBlock(m.sql)));
       } else {
         // Block insert on validation failure. A "force insert" escape hatch
         // appears on click for the rare case where the user wants to edit
@@ -291,18 +381,48 @@ function renderConversation() {
             }, 3000);
             return;
           }
-          insertSqlIntoMetabase(m.sql);
+          insertSqlIntoMetabase(stripIntentBlock(m.sql));
         });
       }
+      // "Wrong" button — opens correction dialog for auto-improvement.
+      const wrongBtn = document.createElement("button");
+      wrongBtn.className = "btn-wrong";
+      wrongBtn.textContent = "Wrong";
+      wrongBtn.title = "Mark this query as wrong and teach the correct one";
+      wrongBtn.addEventListener("click", () => showCorrectionDialog(i, m.sql));
+
+      actions.appendChild(wrongBtn);
       actions.appendChild(copyBtn);
       actions.appendChild(insertBtn);
       header.appendChild(actions);
       turn.appendChild(header);
 
+      // Split intent block (-- INTENT/TABLES/JOINS/FILTERS/NOTES comments) from SQL.
+      const rawSql = m.sql || m.content;
+      const sqlLines = rawSql.split("\n");
+      const intentLines = [];
+      const queryLines = [];
+      let inIntent = true;
+      for (const line of sqlLines) {
+        if (inIntent && /^--\s*(INTENT|TABLES|JOINS|FILTERS|NOTES):/.test(line)) {
+          intentLines.push(line);
+        } else {
+          inIntent = false;
+          queryLines.push(line);
+        }
+      }
+
+      if (intentLines.length) {
+        const intentDiv = document.createElement("div");
+        intentDiv.className = "intent-block";
+        intentDiv.textContent = intentLines.join("\n");
+        turn.appendChild(intentDiv);
+      }
+
       const pre = document.createElement("pre");
       pre.className = "sql-output";
       const code = document.createElement("code");
-      code.textContent = m.sql || m.content;
+      code.textContent = queryLines.join("\n").trim();
       pre.appendChild(code);
       turn.appendChild(pre);
 
@@ -324,6 +444,12 @@ function renderConversation() {
     }
   }
   container.scrollTop = container.scrollHeight;
+}
+
+// Strip intent comment block from SQL for insertion/copy — only the executable SQL.
+function stripIntentBlock(sql) {
+  if (!sql) return "";
+  return sql.split("\n").filter((l) => !/^--\s*(INTENT|TABLES|JOINS|FILTERS|NOTES):/.test(l)).join("\n").trim();
 }
 
 async function copySql(sql, btn) {
@@ -392,7 +518,8 @@ async function sendTurn() {
   renderConversation();
   await saveConversation();
 
-  const systemText = buildSystemPrompt(state.schema, state.dbKey);
+  const corrections = await loadCorrections();
+  const systemText = buildSystemPrompt(state.schema, state.dbKey, corrections);
 
   // Build message history for the LLM. Truncate to MAX_TURNS most recent.
   const msgs = state.conversation
@@ -413,7 +540,7 @@ async function sendTurn() {
       messages: msgs,
     });
 
-    if (sql.startsWith("-- CANNOT_ANSWER")) {
+    if (sql.includes("-- CANNOT_ANSWER")) {
       state.conversation.push({
         role: "assistant",
         content: sql,
@@ -852,6 +979,53 @@ document.getElementById("saveSettings").addEventListener("click", async () => {
   if (keyChanged && newKey) triggerLoadModels();
 });
 
+// --- corrections management (settings tab) ---------------------------------
+
+async function renderCorrectionsList() {
+  const container = document.getElementById("correctionsList");
+  if (!container) return;
+  const corrections = await loadCorrections();
+  container.innerHTML = "";
+  if (!corrections.length) {
+    container.innerHTML = `<p class="helper">No corrections yet. Mark a query as "Wrong" to teach the model.</p>`;
+    return;
+  }
+  for (let i = 0; i < corrections.length; i++) {
+    const c = corrections[i];
+    const item = document.createElement("div");
+    item.className = "correction-item";
+    item.innerHTML = `
+      <div class="correction-item-header">
+        <span class="correction-item-q">${escapeHtml(c.question?.slice(0, 80) || "?")}${c.question?.length > 80 ? "..." : ""}</span>
+        <button class="btn-tiny correction-delete" data-idx="${i}" title="Delete this correction">x</button>
+      </div>
+      ${c.lesson ? `<div class="correction-item-lesson">${escapeHtml(c.lesson)}</div>` : ""}
+    `;
+    container.appendChild(item);
+  }
+  container.querySelectorAll(".correction-delete").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      await deleteCorrection(parseInt(btn.dataset.idx, 10));
+      renderCorrectionsList();
+      renderCorrectionsCount();
+    });
+  });
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+document.getElementById("clearCorrections").addEventListener("click", async () => {
+  if (!confirm("Delete all saved corrections? The model will forget all learned fixes.")) return;
+  await clearAllCorrections();
+  renderCorrectionsList();
+  renderCorrectionsCount();
+  const s = document.getElementById("clearCorrectionsStatus");
+  s.textContent = "✓ cleared";
+  setTimeout(() => (s.textContent = ""), 1500);
+});
+
 // --- init ------------------------------------------------------------------
 
 (async () => {
@@ -862,6 +1036,8 @@ document.getElementById("saveSettings").addEventListener("click", async () => {
     state.conversation = await loadConversation();
     renderConversation();
     renderExplore("");
+    renderCorrectionsList();
+    renderCorrectionsCount();
   } catch (err) {
     console.error("MBB Query Assistant init failed:", err);
     setGenStatus(`Init failed: ${err.message || err}. Try reloading the extension.`, true);
